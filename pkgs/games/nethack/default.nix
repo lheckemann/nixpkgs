@@ -25,7 +25,7 @@ in stdenv.mkDerivation {
 
   makeFlags = [ "PREFIX=$(out)" ];
 
-  patchPhase = ''
+  postPatch = ''
     sed -e '/^ *cd /d' -i sys/unix/nethack.sh
     sed \
       -e 's/^YACC *=.*/YACC = bison -y/' \
