@@ -24,6 +24,8 @@ stdenv.mkDerivation rec {
     -DGTK2_GDKCONFIG_INCLUDE_DIR=${gtk2.out}/lib/gtk-2.0/include
     -DGTK2_INCLUDE_DIRS=${gtk2.dev}/include/gtk-2.0
     -DENABLE_LTO=True
+    -DCMAKE_CXX_FLAGS=-O3 -flto -ffat-lto-objects
+    -DCMAKE_C_FLAGS=-O3 -flto -ffat-lto-objects
   '';
 
   enableParallelBuilding = true;
