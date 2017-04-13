@@ -9454,6 +9454,8 @@ with pkgs;
     inherit (haskellPackages) ghcWithPackages;
   };
 
+  libgme = callPackage ../development/libraries/audio/libgme { };
+
   librdf_raptor = callPackage ../development/libraries/librdf/raptor.nix { };
 
   librdf_raptor2 = callPackage ../development/libraries/librdf/raptor2.nix { };
