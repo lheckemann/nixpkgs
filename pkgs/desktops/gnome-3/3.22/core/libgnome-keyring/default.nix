@@ -10,6 +10,7 @@ stdenv.mkDerivation rec {
 
   propagatedBuildInputs = [ glib gobjectIntrospection dbus_libs libgcrypt ];
   nativeBuildInputs = [ pkgconfig intltool ];
+  outputs = [ "out" "dev" ];
 
   meta = {
     description = "Framework for managing passwords and other secrets";
