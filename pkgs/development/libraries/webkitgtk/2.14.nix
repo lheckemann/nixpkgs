@@ -23,6 +23,8 @@ stdenv.mkDerivation rec {
     maintainers = with maintainers; [ ];
   };
 
+  outputs = [ "out" "dev" ];
+
   preConfigure = "patchShebangs Tools";
 
   src = fetchurl {

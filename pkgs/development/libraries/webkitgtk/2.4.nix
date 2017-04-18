@@ -32,6 +32,8 @@ stdenv.mkDerivation rec {
     ];
   };
 
+  outputs = [ "out" "dev" ];
+
   src = fetchurl {
     url = "http://webkitgtk.org/releases/${name}.tar.xz";
     sha256 = "1xsvnvyvlywwyf6m9ainpsg87jkxjmd37q6zgz9cxb7v3c2ym2jq";

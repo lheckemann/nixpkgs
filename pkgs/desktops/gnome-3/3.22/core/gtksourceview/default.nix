@@ -9,6 +9,8 @@ stdenv.mkDerivation rec {
   buildInputs = [ pkgconfig atk cairo glib pango
                   libxml2Python perl intltool gettext ];
 
+  outputs = [ "out" "dev" ];
+
   preBuild = ''
     substituteInPlace gtksourceview/gtksourceview-utils.c --replace "@NIX_SHARE_PATH@" "$out/share"
   '';
