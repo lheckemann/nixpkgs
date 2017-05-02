@@ -22693,6 +22693,8 @@ in
 
   banner = callPackage ../games/banner {};
 
+  barony = callPackage ../games/barony {};
+
   bastet = callPackage ../games/bastet {};
 
   beancount = with python3.pkgs; toPythonApplication beancount;
