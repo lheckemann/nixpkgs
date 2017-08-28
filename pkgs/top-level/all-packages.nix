@@ -11122,6 +11122,8 @@ with pkgs;
 
   couchpotato = callPackage ../servers/couchpotato {};
 
+  cyrus-imap = callPackage ../servers/mail/cyrus-imap {};
+
   dex-oidc = callPackage ../servers/dex { };
 
   dgraph = callPackage ../servers/dgraph { };
