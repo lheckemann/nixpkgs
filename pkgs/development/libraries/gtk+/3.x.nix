@@ -5,6 +5,7 @@
 , xineramaSupport ? stdenv.isLinux
 , cupsSupport ? stdenv.isLinux, cups ? null
 , darwin, gnome3
+, cogl
 }:
 
 assert cupsSupport -> cups != null;
@@ -41,7 +42,7 @@ stdenv.mkDerivation rec {
   buildInputs = [ libxkbcommon epoxy json_glib ];
   propagatedBuildInputs = with xorg; with stdenv.lib;
     [ expat glib cairo pango gdk_pixbuf atk at_spi2_atk gnome3.gsettings_desktop_schemas
-      libXrandr libXrender libXcomposite libXi libXcursor libSM libICE ]
+      libXrandr libXrender libXcomposite libXi libXcursor libSM libICE cogl ]
     ++ optionals waylandSupport [ wayland wayland-protocols ]
     ++ optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [ AppKit Cocoa ])
     ++ optional xineramaSupport libXinerama
