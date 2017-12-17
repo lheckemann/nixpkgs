@@ -15542,18 +15542,12 @@ with pkgs;
 
   xrdp = callPackage ../applications/networking/remote/xrdp { };
 
-  freerdp = callPackage ../applications/networking/remote/freerdp {
-    inherit libpulseaudio;
-    inherit (gst_all_1) gstreamer gst-plugins-base gst-plugins-good;
-  };
+  freerdp = null;
 
   freerdpUnstable = freerdp;
 
   # This must go when weston v2 is released
-  freerdp_legacy = callPackage ../applications/networking/remote/freerdp/legacy.nix {
-    cmake = cmake_2_8;
-    ffmpeg = ffmpeg_1;
-  };
+  freerdp_legacy = null;
 
   fte = callPackage ../applications/editors/fte { };
 
