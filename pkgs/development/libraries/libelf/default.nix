@@ -17,7 +17,8 @@ stdenv.mkDerivation rec {
 
   doCheck = true;
 
-  configureFlags = []
+  # Config is needed explicitly e.g. for building for armv7l on an aarch64 machine
+  configureFlags = [ "--host=${hostPlatform.config}" ]
        # Configure check for dynamic lib support is broken, see
        # http://lists.uclibc.org/pipermail/uclibc-cvs/2005-August/019383.html
     ++ stdenv.lib.optional (hostPlatform != buildPlatform) "mr_cv_target_elf=yes"
