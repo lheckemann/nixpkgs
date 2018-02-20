@@ -249,7 +249,7 @@ rec {
       kernel = getKernel args.kernel;
       abi =
         /**/ if args ? abi       then getAbi args.abi
-        else if isLinux parsed && args.cpu == "armv7l-linux" then abis.gnueabihf
+        else if isLinux parsed && args.cpu == "armv7l" then abis.gnueabihf
         else if isLinux   parsed then abis.gnu
         else if isWindows parsed then abis.gnu
         else                     abis.unknown;
