@@ -179,6 +179,11 @@ rec {
             ++ optional (elem "host"   configurePlatforms) "--host=${stdenv.hostPlatform.config}"
             ++ optional (elem "target" configurePlatforms) "--target=${stdenv.targetPlatform.config}";
 
+          build_alias = stdenv.buildPlatform.config;
+          host_alias = stdenv.hostPlatform.config;
+          target_alias = stdenv.targetPlatform.config;
+
+
         } // lib.optionalAttrs (stdenv.buildPlatform.isDarwin) {
           # TODO: remove lib.unique once nix has a list canonicalization primitive
           __sandboxProfile =
