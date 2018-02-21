@@ -110,7 +110,7 @@ in stdenv.mkDerivation (rec {
     "-DLLVM_ENABLE_LIBCXX=ON"
     "-DCAN_TARGET_i386=false"
   ]
-  ++ stdenv.lib.optionals stdenv.hostPlatform.isMusl [
+  ++ [
     "-DLLVM_HOST_TRIPLE=${stdenv.hostPlatform.config}"
     "-DLLVM_DEFAULT_TARGET_TRIPLE=${stdenv.targetPlatform.config}"
     "-DTARGET_TRIPLE=${stdenv.targetPlatform.config}"

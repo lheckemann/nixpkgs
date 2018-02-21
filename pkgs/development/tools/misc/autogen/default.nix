@@ -22,6 +22,7 @@ stdenv.mkDerivation rec {
   configureFlags = stdenv.lib.optionals (stdenv.hostPlatform != stdenv.buildPlatform) [
     "--with-libxml2=${libxml2.dev}"
     "--with-libxml2-cflags=-I${libxml2.dev}/include/libxml2"
+    "--program-prefix="
     # the configure check for regcomp wants to run a host program
     "libopts_cv_with_libregex=yes"
     #"MAKEINFO=${buildPackages.texinfo}/bin/makeinfo"

@@ -43,7 +43,7 @@ let
         "x86_64-solaris" = "./Configure solaris64-x86_64-gcc";
       }.${hostPlatform.system} or (
         if hostPlatform == buildPlatform
-          then "./config"
+          then "env MACHINE=${hostPlatform.parsed.cpu.name} ./config"
         else if hostPlatform.isMinGW
           then "./Configure mingw${toString hostPlatform.parsed.cpu.bits}"
         else if hostPlatform.isLinux
