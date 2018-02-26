@@ -39,12 +39,9 @@ rec {
     # Configure Phase
     , configureFlags ? []
     , # Target is not included by default because most programs don't care.
-      # Including it then would cause needless mass rebuilds.
-      #
-      # TODO(@Ericson2314): Make [ "build" "host" ] always the default.
-      configurePlatforms ? lib.optionals
-        (stdenv.hostPlatform != stdenv.buildPlatform)
-        [ "build" "host" ]
+      # Including it then would cause needless mass rebuilds and undesired
+      # executable name prefixing
+      configurePlatforms ? [ "build" "host" ]
 
     # Check phase
     , doCheck ? false
@@ -178,10 +175,6 @@ rec {
             ++ optional (elem "build"  configurePlatforms) "--build=${stdenv.buildPlatform.config}"
             ++ optional (elem "host"   configurePlatforms) "--host=${stdenv.hostPlatform.config}"
             ++ optional (elem "target" configurePlatforms) "--target=${stdenv.targetPlatform.config}";
-
-          build_alias = stdenv.buildPlatform.config;
-          host_alias = stdenv.hostPlatform.config;
-          target_alias = stdenv.targetPlatform.config;
 
 
         } // lib.optionalAttrs (stdenv.buildPlatform.isDarwin) {

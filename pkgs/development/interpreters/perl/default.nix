@@ -75,6 +75,8 @@ let
       ++ optional enableThreading "-Dusethreads";
 
     configureScript = stdenv.lib.optionalString (!crossCompiling) "${stdenv.shell} ./Configure";
+    
+    configurePlatforms = [];
 
     dontAddPrefix = !crossCompiling;
 
@@ -125,7 +127,7 @@ let
       maintainers = [ maintainers.eelco ];
       platforms = platforms.all;
     };
-  } // stdenv.lib.optionalAttrs (stdenv.buildPlatform != stdenv.hostPlatform) rec {
+  } // stdenv.lib.optionalAttrs crossCompiling rec {
     crossVersion = "1.1.8";
 
     perl-cross-src = fetchurlBoot {

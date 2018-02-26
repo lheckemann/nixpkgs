@@ -19,7 +19,7 @@ stdenv.mkDerivation rec {
     guile libxml2
   ];
 
-  configureFlags = stdenv.lib.optionals (stdenv.hostPlatform != stdenv.buildPlatform) [
+  configureFlags = [
     "--with-libxml2=${libxml2.dev}"
     "--with-libxml2-cflags=-I${libxml2.dev}/include/libxml2"
     "--program-prefix="
