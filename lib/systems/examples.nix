@@ -82,6 +82,11 @@ rec {
   riscv64 = riscv "64";
   riscv32 = riscv "32";
 
+  sparc64 = {
+    config = "sparc64-unknown-linux-gnu";
+    arch = "sparc64";
+  };
+
 
   #
   # Darwin

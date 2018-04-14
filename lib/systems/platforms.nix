@@ -554,6 +554,19 @@ rec {
     '';
   };
 
+  sparc = {
+    name = "sparc64";
+    bfdEmulation = "elf64lsparc";
+    kernelMajor = "2.6";
+    kernelBaseConfig = "defconfig";
+    kernelAutoModules = false;
+    kernelArch = "sparc";
+    kernelTarget = "zImage";
+    gcc = {
+      #arch = "sparc64";
+    };
+  };
+
   selectBySystem = system: {
       "i686-linux" = pc32;
       "x86_64-linux" = pc64;
@@ -562,5 +575,6 @@ rec {
       "armv7l-linux" = armv7l-hf-multiplatform;
       "aarch64-linux" = aarch64-multiplatform;
       "mipsel-linux" = fuloong2f_n32;
+      "sparc64-linux" = sparc;
     }.${system} or pcBase;
 }
