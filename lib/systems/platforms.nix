@@ -560,7 +560,7 @@ rec {
     kernelMajor = "2.6";
     kernelBaseConfig = "defconfig";
     kernelAutoModules = false;
-    kernelArch = "sparc";
+    kernelArch = "sparc64";
     kernelTarget = "zImage";
     gcc = {
       #arch = "sparc64";

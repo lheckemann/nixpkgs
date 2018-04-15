@@ -153,7 +153,6 @@ let
 
       # Some image types need special install targets (e.g. uImage is installed with make uinstall)
       installTargets = [ (if platform.kernelTarget == "uImage" then "uinstall" else
-                          if platform.kernelTarget == "zImage" || platform.kernelTarget == "Image.gz" then "zinstall" else
                           "install") ];
 
       postInstall = (optionalString installsFirmware ''
