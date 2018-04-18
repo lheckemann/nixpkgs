@@ -12,6 +12,8 @@ stdenv.mkDerivation rec {
     rev = version;
   };
 
+  patches = [ ./0001-Don-t-rely-on-glibc-implementation-details.patch ];
+
   buildInputs = [
     libGLU_combined SDL SDL_image SDL_mixer libpng zlib libjpeg imagemagick
     libX11

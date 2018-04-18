@@ -1,0 +1,35 @@
+From 3d30f608c6d42cccd4934ed8a0d06f20496c8b4f Mon Sep 17 00:00:00 2001
+From: Linus Heckemann <git@sphalerite.org>
+Date: Tue, 17 Apr 2018 15:58:43 +0100
+Subject: [PATCH] Don't rely on glibc implementation details
+
+---
+ shared/cube.h | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/shared/cube.h b/shared/cube.h
+index 021c9bf5..ee2e9085 100644
+--- a/shared/cube.h
++++ b/shared/cube.h
+@@ -3,17 +3,13 @@
+ 
+ #define _FILE_OFFSET_BITS 64
+ 
+-#ifdef __GNUC__
+-#define gamma __gamma
+-#endif
+-
+ #ifdef WIN32
+ #define _USE_MATH_DEFINES
+ #endif
+ #include <math.h>
+ 
+ #ifdef __GNUC__
+-#undef gamma
++#define gamma _cube_gamma
+ #endif
+ 
+ #include <string.h>
+-- 
+2.16.2
+
