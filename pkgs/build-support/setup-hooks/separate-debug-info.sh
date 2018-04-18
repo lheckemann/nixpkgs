@@ -11,6 +11,12 @@ _separateDebugInfo() {
     local dst="${debug:-$out}"
     if [ "$prefix" = "$dst" ]; then return 0; fi
 
+    if ! type -p "$OBJCOPY" >/dev/null || ! type -p "$STRIP" >/dev/null ; then
+        echo "warning: not separating debug info, objcopy ($OBJCOPY) and strip ($STRIP) not found"
+        mkdir -p "$dst"
+        return 0
+    fi
+
     dst="$dst/lib/debug/.build-id"
 
     # Find executables and dynamic libraries.
@@ -28,8 +34,8 @@ _separateDebugInfo() {
         # Extract the debug info.
         header "separating debug info from $i (build ID $id)"
         mkdir -p "$dst/${id:0:2}"
-        $OBJCOPY --only-keep-debug "$i" "$dst/${id:0:2}/${id:2}.debug"
-        $STRIP --strip-debug "$i"
+        "$OBJCOPY" --only-keep-debug "$i" "$dst/${id:0:2}/${id:2}.debug"
+        "$STRIP" --strip-debug "$i"
 
         # Also a create a symlink <original-name>.debug.
         ln -sfn ".build-id/${id:0:2}/${id:2}.debug" "$dst/../$(basename "$i")"

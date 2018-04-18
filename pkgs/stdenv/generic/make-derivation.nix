@@ -59,7 +59,7 @@ rec {
         (if attrs.meta.description or null != null
           then builtins.unsafeGetAttrPos "description" attrs.meta
           else builtins.unsafeGetAttrPos "name" attrs)
-    , separateDebugInfo ? ! (attrs ? outputHashAlgo)
+    , separateDebugInfo ? ! (attrs ? outputHashAlgo || attrs ? buildCommand)
     , outputs ? [ "out" ]
     , __impureHostDeps ? []
     , __propagatedImpureHostDeps ? []

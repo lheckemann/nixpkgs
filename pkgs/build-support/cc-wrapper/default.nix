@@ -104,6 +104,7 @@ stdenv.mkDerivation {
 
   dontBuild = true;
   dontConfigure = true;
+  separateDebugInfo = false;
 
   unpackPhase = ''
     src=$PWD
