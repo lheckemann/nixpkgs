@@ -108,21 +108,15 @@ let
       build = configEvaled.config.system.build;
       kernelTarget = configEvaled.pkgs.stdenv.platform.kernelTarget;
     in
-      pkgs.symlinkJoin {
-        name = "netboot";
-        paths = [
-          build.netbootRamdisk
-          build.kernel
-          build.netbootIpxeScript
-        ];
-        postBuild = ''
+      pkgs.runCommandNoCC "netboot" {
+        preferLocalBuild = true;
+      } ''
           mkdir -p $out/nix-support
+          cp -r ${build.netbootRamdisk}/* ${build.kernel}/* ${build.netbootIpxeScript}/* $out/
           echo "file ${kernelTarget} $out/${kernelTarget}" >> $out/nix-support/hydra-build-products
           echo "file initrd $out/initrd" >> $out/nix-support/hydra-build-products
           echo "file ipxe $out/netboot.ipxe" >> $out/nix-support/hydra-build-products
-        '';
-        preferLocalBuild = true;
-      };
+      '';
 
 in rec {
 
