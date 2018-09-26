@@ -72,11 +72,10 @@ with lib;
     # plenty of free memory.
     boot.kernel.sysctl."vm.overcommit_memory" = "1";
 
-    # To speed up installation a little bit, include the complete
-    # stdenv in the Nix store on the CD.
+    # To speed up installation a little bit, include some extra bits in the Nix
+    # store on the installation device.
     system.extraDependencies = with pkgs;
       [
-        stdenv
         stdenvNoCC # for runCommand
         busybox
         jq # for closureInfo
