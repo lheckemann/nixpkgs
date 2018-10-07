@@ -39,7 +39,8 @@ stdenv.mkDerivation rec {
         --subst-var-by id "$(type -p id)" \
         --subst-var-by perl "$(type -p perl)" \
         --subst-var-by uname "$(type -p uname)" \
-        --subst-var-by wget "$(type -p wget)"
+        --subst-var-by wget "$(type -p wget)" \
+        --replace 'CHROOT_CMD="chroot' 'CHROOT_CMD="${coreutils}/bin/chroot'
     done
 
 
