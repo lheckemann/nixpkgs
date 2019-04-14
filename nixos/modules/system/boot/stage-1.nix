@@ -102,50 +102,6 @@ let
         cp -pdv $1 $out/bin
       }
 
-      # Copy BusyBox.
-      for BIN in ${pkgs.busybox}/{s,}bin/*; do
-        copy_bin_and_libs $BIN
-      done
-
-      # Copy some utillinux stuff.
-      copy_bin_and_libs ${pkgs.utillinux}/sbin/blkid
-
-      # Copy dmsetup and lvm.
-      copy_bin_and_libs ${pkgs.lvm2}/sbin/dmsetup
-      copy_bin_and_libs ${pkgs.lvm2}/sbin/lvm
-
-      # Add RAID mdadm tool.
-      copy_bin_and_libs ${pkgs.mdadm}/sbin/mdadm
-      copy_bin_and_libs ${pkgs.mdadm}/sbin/mdmon
-
-      # Copy udev.
-      copy_bin_and_libs ${udev}/lib/systemd/systemd-udevd
-      copy_bin_and_libs ${udev}/bin/udevadm
-      for BIN in ${udev}/lib/udev/*_id; do
-        copy_bin_and_libs $BIN
-      done
-
-      # Copy modprobe.
-      copy_bin_and_libs ${pkgs.kmod}/bin/kmod
-      ln -sf kmod $out/bin/modprobe
-
-      # Copy resize2fs if any ext* filesystems are to be resized
-      ${optionalString (any (fs: fs.autoResize && (lib.hasPrefix "ext" fs.fsType)) fileSystems) ''
-        # We need mke2fs in the initrd.
-        copy_bin_and_libs ${pkgs.e2fsprogs}/sbin/resize2fs
-      ''}
-
-      # Copy secrets if needed.
-      ${optionalString (!config.boot.loader.supportsInitrdSecrets)
-          (concatStringsSep "\n" (mapAttrsToList (dest: source:
-             let source' = if source == null then dest else source; in
-               ''
-                  mkdir -p $(dirname "$out/secrets/${dest}")
-                  cp -a ${source'} "$out/secrets/${dest}"
-                ''
-          ) config.boot.initrd.secrets))
-       }
-
       ${config.boot.initrd.extraUtilsCommands}
 
       # Copy ld manually since it isn't detected correctly
@@ -182,16 +138,6 @@ let
       done
 
       if [ -z "${toString (pkgs.stdenv.hostPlatform != pkgs.stdenv.buildPlatform)}" ]; then
-      # Make sure that the patchelf'ed binaries still work.
-      echo "testing patched programs..."
-      $out/bin/ash -c 'echo hello world' | grep "hello world"
-      export LD_LIBRARY_PATH=$out/lib
-      $out/bin/mount --help 2>&1 | grep -q "BusyBox"
-      $out/bin/blkid -V 2>&1 | grep -q 'libblkid'
-      $out/bin/udevadm --version
-      $out/bin/dmsetup --version 2>&1 | tee -a log | grep -q "version:"
-      LVM_SYSTEM_DIR=$out $out/bin/lvm version 2>&1 | tee -a log | grep -q "LVM"
-      $out/bin/mdadm --version
 
       ${config.boot.initrd.extraUtilsCommandsTest}
       fi
@@ -568,5 +514,62 @@ in
 
     boot.initrd.supportedFilesystems = map (fs: fs.fsType) fileSystems;
 
+    boot.initrd.extraUtilsCommands = lib.mkBefore ''
+      # Copy BusyBox.
+      for BIN in ${pkgs.busybox}/{s,}bin/*; do
+        copy_bin_and_libs $BIN
+      done
+
+      # Copy some utillinux stuff.
+      copy_bin_and_libs ${pkgs.utillinux}/sbin/blkid
+
+      # Copy dmsetup and lvm.
+      copy_bin_and_libs ${pkgs.lvm2}/sbin/dmsetup
+      copy_bin_and_libs ${pkgs.lvm2}/sbin/lvm
+
+      # Add RAID mdadm tool.
+      copy_bin_and_libs ${pkgs.mdadm}/sbin/mdadm
+      copy_bin_and_libs ${pkgs.mdadm}/sbin/mdmon
+
+      # Copy udev.
+      copy_bin_and_libs ${udev}/lib/systemd/systemd-udevd
+      copy_bin_and_libs ${udev}/bin/udevadm
+      for BIN in ${udev}/lib/udev/*_id; do
+        copy_bin_and_libs $BIN
+      done
+
+      # Copy modprobe.
+      copy_bin_and_libs ${pkgs.kmod}/bin/kmod
+      ln -sf kmod $out/bin/modprobe
+
+      # Copy resize2fs if any ext* filesystems are to be resized
+      ${optionalString (any (fs: fs.autoResize && (lib.hasPrefix "ext" fs.fsType)) fileSystems) ''
+        # We need mke2fs in the initrd.
+        copy_bin_and_libs ${pkgs.e2fsprogs}/sbin/resize2fs
+      ''}
+
+      # Copy secrets if needed.
+      ${optionalString (!config.boot.loader.supportsInitrdSecrets)
+          (concatStringsSep "\n" (mapAttrsToList (dest: source:
+             let source' = if source == null then dest else source; in
+               ''
+                  mkdir -p $(dirname "$out/secrets/${dest}")
+                  cp -a ${source'} "$out/secrets/${dest}"
+                ''
+          ) config.boot.initrd.secrets))
+       }
+    '';
+    boot.initrd.extraUtilsCommandsTest = lib.mkBefore ''
+      # Make sure that the patchelf'ed binaries still work.
+      echo "testing patched programs..."
+      $out/bin/ash -c 'echo hello world' | grep "hello world"
+      export LD_LIBRARY_PATH=$out/lib
+      $out/bin/mount --help 2>&1 | grep -q "BusyBox"
+      $out/bin/blkid -V 2>&1 | grep -q 'libblkid'
+      $out/bin/udevadm --version
+      $out/bin/dmsetup --version 2>&1 | tee -a log | grep -q "version:"
+      LVM_SYSTEM_DIR=$out $out/bin/lvm version 2>&1 | tee -a log | grep -q "LVM"
+      $out/bin/mdadm --version
+    '';
   };
 }
