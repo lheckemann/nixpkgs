@@ -16,13 +16,12 @@
 , name ? "initrd"
 , compressor ? "gzip -9n"
 , prepend ? []
+, makeUInitrd ? stdenv.hostPlatform.platform.kernelTarget == "uImage"
 }:
 
 stdenv.mkDerivation rec {
-  inherit name;
+  inherit name makeUInitrd;
   builder = ./make-initrd.sh;
-
-  makeUInitrd = stdenv.hostPlatform.platform.kernelTarget == "uImage";
 
   nativeBuildInputs = [ perl cpio ]
     ++ stdenv.lib.optional makeUInitrd ubootTools;
