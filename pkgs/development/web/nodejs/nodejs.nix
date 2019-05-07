@@ -50,10 +50,12 @@ in
       inherit sha256;
     };
 
+    configurePlatforms = [];
+
     buildInputs = optionals stdenv.isDarwin [ CoreServices ApplicationServices ]
       ++ [ python2 zlib libuv openssl http-parser ];
 
-    nativeBuildInputs = [ which utillinux ]
+    nativeBuildInputs = [ which utillinux python2 ]
       ++ optionals stdenv.isDarwin [ pkgconfig xcbuild ];
 
     configureFlags = sharedConfigureFlags ++ [ "--without-dtrace" ] ++ extraConfigFlags;
