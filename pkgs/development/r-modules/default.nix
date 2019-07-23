@@ -962,6 +962,13 @@ let
       '';
     });
 
+    ITKR = old.ITKR.overrideAttrs (o: {
+      # ITKR tries to clone and build ITK itself. Prevent this by removing the relevant files.
+      preConfigure = "rm configure src/Makevars";
+      # Symlink our own ITK in so ITKR can find it.
+      postInstall = "ln -s ${pkgs.itk}/* $out/library/ITKR/libs";
+    });
+
   };
 in
   self
