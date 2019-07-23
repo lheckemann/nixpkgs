@@ -10,6 +10,7 @@ mirrorUrls <- list( bioc=paste0("http://bioconductor.statistik.tu-dortmund.de/pa
                   , "bioc-annotation"=paste0("http://bioconductor.statistik.tu-dortmund.de/packages/", biocVersion, "/data/annotation/src/contrib/")
                   , "bioc-experiment"=paste0("http://bioconductor.statistik.tu-dortmund.de/packages/", biocVersion, "/data/experiment/src/contrib/")
                   , cran=paste0("http://mran.revolutionanalytics.com/snapshot/", snapshotDate, "/src/contrib/")
+                  , neuroc="https://neuroconductor.org/releases/2019/may/src/contrib/"
                   )
 
 mirrorType <- commandArgs(trailingOnly=TRUE)[1]

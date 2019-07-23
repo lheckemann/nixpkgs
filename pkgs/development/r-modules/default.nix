@@ -58,6 +58,10 @@ let
     mkHomepage = {name, snapshot, ...}: "http://mran.revolutionanalytics.com/snapshot/${snapshot}/web/packages/${name}/";
     mkUrls = {name, version, snapshot}: [ "http://mran.revolutionanalytics.com/snapshot/${snapshot}/src/contrib/${name}_${version}.tar.gz" ];
   };
+  deriveNeuroc = mkDerive {
+    mkHomepage = {name, ...}: "https://neuroconductor.org/package/${name}";
+    mkUrls = {name, version, ...}: ["https://neuroconductor.org/releases/2019/may/src/contrib/${name}_${version}.tar.gz"];
+  };
 
   # Overrides package definitions with nativeBuildInputs.
   # For example,
@@ -220,7 +224,8 @@ let
           import ./bioc-packages.nix { inherit self; derive = deriveBioc; } //
           import ./bioc-annotation-packages.nix { inherit self; derive = deriveBiocAnn; } //
           import ./bioc-experiment-packages.nix { inherit self; derive = deriveBiocExp; } //
-          import ./cran-packages.nix { inherit self; derive = deriveCran; };
+          import ./cran-packages.nix { inherit self; derive = deriveCran; } //
+          import ./neuroc-packages.nix { inherit self; derive = deriveNeuroc; };
 
   # tweaks for the individual packages and "in self" follow
 
