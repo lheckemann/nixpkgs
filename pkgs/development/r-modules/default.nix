@@ -969,6 +969,10 @@ let
       postInstall = "ln -s ${pkgs.itk}/* $out/library/ITKR/libs";
     });
 
+    ANTsRCore = old.ANTsRCore.overrideAttrs (o: {
+      preConfigure = "patchShebangs configure";
+    });
+
   };
 in
   self
