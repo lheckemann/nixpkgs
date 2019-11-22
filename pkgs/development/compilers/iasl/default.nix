@@ -23,6 +23,8 @@ stdenv.mkDerivation rec {
       install generate/unix/bin*/iasl $out/bin
     '';
 
+  enableParallelBuilding = true;
+
   meta = {
     description = "Intel ACPI Compiler";
     homepage = http://www.acpica.org/;
