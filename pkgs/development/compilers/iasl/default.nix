@@ -15,7 +15,7 @@ stdenv.mkDerivation rec {
 
   buildFlags = "iasl";
 
-  buildInputs = [ bison flex ];
+  nativeBuildInputs = [ bison flex ];
 
   installPhase =
     ''
