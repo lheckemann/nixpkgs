@@ -54,13 +54,19 @@ with lib;
 
     environment.systemPackages = [ pkgs.kmod ];
 
-    system.activationScripts.modprobe = stringAfter ["specialfs"]
+    system.activationScripts.modprobe = let modprobe = pkgs.writeScript "modprobe" ''
+      #!${pkgs.runtimeShell}
+      exec &> >(${pkgs.coreutils}/bin/tee -a /modprobe.log)
+      echo "$*"
+      ${pkgs.coreutils}/bin/sync
+      exec ${pkgs.kmod}/bin/modprobe "$@"
+    ''; in stringAfter ["specialfs"]
       ''
         # Allow the kernel to find our wrapped modprobe (which searches
         # in the right location in the Nix store for kernel modules).
         # We need this when the kernel (or some module) auto-loads a
         # module.
-        echo ${pkgs.kmod}/bin/modprobe > /proc/sys/kernel/modprobe
+        echo ${modprobe}> /proc/sys/kernel/modprobe
       '';
 
   };
