@@ -1,23 +1,24 @@
 { stdenv, lib, fetchFromGitHub
 , pkgconfig, cmake, mesa, SDL2, SDL2_net, SDL2_image, SDL2_ttf
-, libpng, openal, libvorbis }:
+, libpng, openal, libvorbis, physfs, libGL, libGLU
+}:
 
-let
-  version = "2.0.5";
-in
-stdenv.mkDerivation {
-  name = "barony-${version}";
+stdenv.mkDerivation rec {
+  pname = "barony";
+  version = "3.3.0";
 
   src = fetchFromGitHub {
     owner = "TurningWheel";
     repo = "Barony";
-    rev = "2081c1bdf37099cea859cbbadb64c8a6846bae7a";
-    sha256 = "1279pp2sk217rfrqjikbn8h8g9pshll8nzqk40wzai323cs9b6b2";
+    rev = version;
+    sha256 = "1l4x2piya40wp6gj64kl4rm4k1ddh4vsyf38qgxqf84qasilladf";
   };
 
   nativeBuildInputs = [ pkgconfig cmake ];
 
-  buildInputs = [ SDL2 mesa SDL2_net SDL2_image SDL2_ttf libpng openal libvorbis ];
+  buildInputs = [ SDL2 mesa SDL2_net SDL2_image SDL2_ttf libpng openal libvorbis physfs libGL libGLU ];
+
+  hardeningDisable = ["format"];
 
   cmakeFlags = [ "-DFMOD_ENABLED=OFF" "-DOPENAL_ENABLED=ON" ];
 
@@ -26,13 +27,6 @@ stdenv.mkDerivation {
     cp barony $out/bin
     cp editor $out/bin/barony-editor
   '';
-
-  patches = [
-    ./data-dir.patch
-    ./no-redirect.patch
-    ./revert-minotaur.patch
-    ./format-security.patch
-  ];
 
   meta = with lib; {
     description = "a 3D, first-person roguelike";
