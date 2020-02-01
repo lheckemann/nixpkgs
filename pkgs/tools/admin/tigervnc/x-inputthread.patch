@@ -1,0 +1,17 @@
+diff --git a/unix/xserver/hw/vnc/Input.c b/unix/xserver/hw/vnc/Input.c
+index 534e435e..b342d4d6 100644
+--- a/unix/xserver/hw/vnc/Input.c
++++ b/unix/xserver/hw/vnc/Input.c
+@@ -711,3 +711,12 @@ static void vncKeysymKeyboardEvent(KeySym keysym, int down)
+ 	 */
+ 	mieqProcessInputEvents();
+ }
++
++#if INPUTTHREAD
++/** This function is called in Xserver/os/inputthread.c when starting
++    the input thread. */
++void
++ddxInputThreadInit(void)
++{
++}
++#endif

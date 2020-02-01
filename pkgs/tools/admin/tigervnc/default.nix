@@ -38,6 +38,8 @@ stdenv.mkDerivation rec {
        --replace '"/usr/bin/ssh' '"${openssh}/bin/ssh'
   '';
 
+  patches = [./x-inputthread.patch];
+
   dontUseCmakeBuildDir = true;
 
   postBuild = ''
@@ -53,14 +55,11 @@ stdenv.mkDerivation rec {
     ./configure $configureFlags  --disable-devel-docs --disable-docs \
         --disable-xorg --disable-xnest --disable-xvfb --disable-dmx \
         --disable-xwin --disable-xephyr --disable-kdrive --with-pic \
-        --disable-xorgcfg --disable-xprint --disable-static \
-        --enable-composite --disable-xtrap --enable-xcsecurity \
-        --disable-{a,c,m}fb \
+        --disable-static \
+        --enable-composite --enable-xcsecurity \
         --disable-xwayland \
-        --disable-config-dbus --disable-config-udev --disable-config-hal \
-        --disable-xevie \
+        --disable-config-udev --disable-config-hal \
         --disable-dri --disable-dri2 --disable-dri3 --enable-glx \
-        --enable-install-libxf86config \
         --prefix="$out" --disable-unit-tests \
         --with-xkb-path=${xkeyboard_config}/share/X11/xkb \
         --with-xkb-bin-directory=${xorg.xkbcomp}/bin \
