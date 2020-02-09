@@ -1,21 +1,24 @@
-{ stdenv, gtest, fetchFromGitHub, cmake, boost, eigen, python, vtk, zlib, tbb }:
+{ stdenv, gtest, fetchFromGitHub, itk, cmake, boost, eigen, python, vtk, zlib, tbb, libGL, libGLU, freeglut, fltk }:
 
 stdenv.mkDerivation rec {
-  version = "2.0.0";
+  version = "unstable-2020-01-08";
   pname = "mirtk";
 
   src = fetchFromGitHub {
     owner = "BioMedIA";
     repo = "MIRTK";
-    rev = "v${version}";
-    sha256 = "0i2v97m66ir5myvi5b123r7zcagwy551b73s984gk7lksl5yiqxk";
+    rev = "c8e35554f1c23ef14a1c1c51b042e43f82fb44a7";
+    sha256 = "13iclc5zv5ihw09g2si01spr0ibsgparyhgg1z6g0d3sj19prplb";
     fetchSubmodules = true;
   };
 
   cmakeFlags = [
     "-DWITH_VTK=ON"
-    "-DBUILD_ALL_MODULES=ON"
+    #"-DBUILD_ALL_MODULES=ON"
     "-DWITH_TBB=ON"
+    "-DITK_DIR=${itk}/lib/cmake/ITK-5.0"
+    "-DMODULE_DrawEM=OFF"
+    "-DMODULE_Viewer=ON"
   ];
 
   doCheck = true;
@@ -34,7 +37,7 @@ stdenv.mkDerivation rec {
   enableParallelBuilding = true;
 
   nativeBuildInputs = [ cmake gtest ];
-  buildInputs = [ boost eigen python vtk zlib tbb ];
+  buildInputs = [ boost eigen python vtk zlib tbb libGL libGLU freeglut fltk ];
 
   meta = with stdenv.lib; {
     homepage = "https://github.com/BioMedIA/MIRTK";
