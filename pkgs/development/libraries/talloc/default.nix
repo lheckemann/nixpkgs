@@ -40,6 +40,7 @@ stdenv.mkDerivation rec {
     "--enable-talloc-compat1"
     "--bundled-libraries=NONE"
     "--builtin-libraries=replace"
+    "--disable-python"
   ];
 
   # python-config from build Python gives incorrect values when cross-compiling.
