@@ -640,6 +640,8 @@ let
     });
 
     misc = {
+      ASYNC_TX_DMA = yes; # makes thunderx work. Probably improves performance on some other platforms as well.
+
       HID_BATTERY_STRENGTH = yes;
       # enabled by default in x86_64 but not arm64, so we do that here
       HIDRAW               = yes;
