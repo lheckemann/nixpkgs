@@ -1,14 +1,14 @@
 { stdenv, gtest, fetchFromGitHub, itk, cmake, boost, eigen, python, vtk, zlib, tbb, libGL, libGLU, freeglut, fltk }:
 
 stdenv.mkDerivation rec {
-  version = "unstable-2020-01-08";
+  version = "unstable-2020-11-30";
   pname = "mirtk";
 
   src = fetchFromGitHub {
     owner = "BioMedIA";
     repo = "MIRTK";
-    rev = "c8e35554f1c23ef14a1c1c51b042e43f82fb44a7";
-    sha256 = "13iclc5zv5ihw09g2si01spr0ibsgparyhgg1z6g0d3sj19prplb";
+    rev = "66ecbd6e33d39bdedfe406b96ee3307093dd864e";
+    sha256 = "09j2svjq9h5b3pna6xaj3vr5dahrjwcyyrs2r62xf0kbikqv1i0m";
     fetchSubmodules = true;
   };
 
