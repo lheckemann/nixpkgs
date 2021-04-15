@@ -1,6 +1,12 @@
 { lib, fetchFromGitHub
 , makeWrapper, makeDesktopItem, mkYarnPackage
 , electron, element-web
+, nodePackages
+, fetchzip
+, nodejs
+, python3
+, pkgconfig, libsecret
+, cargo
 }:
 # Notes for maintainers:
 # * versions of `element-web` and `element-desktop` should be kept in sync.
@@ -15,14 +21,35 @@ let
     rev = "v${version}";
     sha256 = "sha256-q8hVmTLt/GdLc6NSldLggogObQcPFp+lAeS3wmO0qPo=";
   };
+  nodeHeaders = fetchzip {
+    name = "node-v${nodejs.version}-headers";
+    url = "https://nodejs.org/download/release/v${nodejs.version}/node-v${nodejs.version}-headers.tar.gz";
+    sha256 = "0bmcj91dlbn7kz9759fadnqpy4xi6indy566g313i0ga3dyiqqbn";
+  };
 in mkYarnPackage rec {
   name = "element-desktop-${version}";
   inherit version src;
 
   packageJSON = ./element-desktop-package.json;
   yarnNix = ./element-desktop-yarndeps.nix;
+  yarnLock = ./element-desktop-yarndeps.lock;
 
   nativeBuildInputs = [ makeWrapper ];
+
+  pkgConfig = {
+    matrix-seshat = {
+      buildInputs = [ cargo ];
+      postInstall = ''
+        cargo build
+      '';
+    };
+    keytar = {
+      buildInputs = [ nodePackages.node-gyp python3 pkgconfig libsecret ];
+      postInstall = ''
+        node-gyp --nodedir=${nodeHeaders} rebuild
+      '';
+    };
+  };
 
   installPhase = ''
     # resources
