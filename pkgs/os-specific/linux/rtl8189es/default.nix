@@ -1,4 +1,4 @@
-{ stdenv, fetchFromGitHub, kernel, bc, nukeReferences }:
+{ stdenv, lib, fetchFromGitHub, kernel, bc, nukeReferences }:
 
 stdenv.mkDerivation rec {
   name = "rtl8189es-${kernel.version}-${version}";
@@ -7,8 +7,8 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "jwrdegoede";
     repo = "rtl8189ES_linux";
-    rev = "930d3d7cfe3b25c0cf8a57ca4b79f6aef5b6de4b";
-    sha256 = "026rrnm4wxyh4li03mpvza49mm0g5by754lrqxys934cmp8v6cv1";
+    rev = "03ac413135a355b55b693154c44b70f86a39732e";
+    sha256 = "0wiikviwyvy6h55rgdvy7csi1zqniqg26p8x44rd6mhbw0g00h56";
   };
 
   nativeBuildInputs = [ bc nukeReferences ];
@@ -24,11 +24,11 @@ stdenv.mkDerivation rec {
   '';
 
   makeFlags = [
-    "ARCH=${stdenv.hostPlatform.platform.kernelArch}"
+    "ARCH=${stdenv.hostPlatform.linuxArch}"
     "KSRC=${kernel.dev}/lib/modules/${kernel.modDirVersion}/build"
     ("CONFIG_PLATFORM_I386_PC=" + (if (stdenv.hostPlatform.isi686 || stdenv.hostPlatform.isx86_64) then "y" else "n"))
     ("CONFIG_PLATFORM_ARM_RPI=" + (if (stdenv.hostPlatform.isAarch32 || stdenv.hostPlatform.isAarch64) then "y" else "n"))
-  ] ++ stdenv.lib.optional (stdenv.hostPlatform != stdenv.buildPlatform) [
+  ] ++ lib.optional (stdenv.hostPlatform != stdenv.buildPlatform) [
     "CROSS_COMPILE=${stdenv.cc.targetPrefix}"
   ];
 
@@ -40,7 +40,7 @@ stdenv.mkDerivation rec {
     nuke-refs $out/lib/modules/*/kernel/net/wireless/*.ko
   '';
 
-  meta = with stdenv.lib; {
+  meta = with lib; {
     description = "Driver for Realtek rtl8189es";
     homepage = "https://github.com/jwrdegoede/rtl8189ES_linux";
     license = licenses.gpl2;
