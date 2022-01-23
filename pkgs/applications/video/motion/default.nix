@@ -16,6 +16,12 @@ stdenv.mkDerivation rec {
 
   buildInputs = [ ffmpeg libjpeg libmicrohttpd ];
 
+  preConfigure = ''
+    configureFlagsArray+=("PKGCONFIG=${stdenv.cc.targetPrefix}pkg-config")
+    substituteInPlace configure \
+      --replace pkg-config ${stdenv.cc.targetPrefix}pkg-config
+  '';
+
   meta = with lib; {
     description = "Monitors the video signal from cameras";
     homepage = "https://motion-project.github.io/";
