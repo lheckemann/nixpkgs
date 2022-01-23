@@ -63,6 +63,7 @@ stdenv.mkDerivation rec {
     orc
     glib
     gobject-introspection
+    gstreamer
 
     # docs
     # TODO add hotdoc here
