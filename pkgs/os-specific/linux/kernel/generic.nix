@@ -196,7 +196,10 @@ let
     inherit modDirVersion kernelPatches randstructSeed lib stdenv extraMakeFlags extraMeta configfile;
     pos = builtins.unsafeGetAttrPos "version" args;
 
-    config = { CONFIG_MODULES = "y"; CONFIG_FW_LOADER = "m"; };
+    config = {
+      CONFIG_MODULES = configfile.structuredConfig.MODULES or "y";
+      CONFIG_FW_LOADER = configfile.structuredConfig.FW_LOADER or "m";
+    };
   });
 
   passthru = basicArgs // {
