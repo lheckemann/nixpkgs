@@ -62,7 +62,9 @@ stdenv.mkDerivation rec {
     gettext
     orc
     glib
+    gobject-introspection
     gstreamer
+
     # docs
     # TODO add hotdoc here
     gobject-introspection
