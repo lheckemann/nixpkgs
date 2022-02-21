@@ -82,6 +82,7 @@ in lib.makeScopeWithSplicing
       i486 = "i386";
       i586 = "i386";
       i686 = "i386";
+      mips = if stdenv.hostPlatform.isBigEndian then "mipseb" else "mipsel";
     }.${stdenv'.hostPlatform.parsed.cpu.name}
       or stdenv'.hostPlatform.parsed.cpu.name;
 
