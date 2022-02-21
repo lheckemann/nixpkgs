@@ -527,6 +527,7 @@ stdenv.mkDerivation {
       patchShebangs $dir
     done
 
+    '' + lib.optionalString withImportd ''
     # absolute paths to gpg & tar
     substituteInPlace src/import/pull-common.c \
       --replace '"gpg"' '"${gnupg}/bin/gpg"'
@@ -534,7 +535,7 @@ stdenv.mkDerivation {
       substituteInPlace $file \
         --replace '"tar"' '"${gnutar}/bin/tar"'
     done
-
+  '' + ''
 
     substituteInPlace src/libsystemd/sd-journal/catalog.c \
       --replace /usr/lib/systemd/catalog/ $out/lib/systemd/catalog/
