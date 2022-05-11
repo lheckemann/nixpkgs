@@ -17,9 +17,12 @@ let
   # The old version has some CVEs howver they should not affect SPDK's usage of the framework: https://github.com/NixOS/nixpkgs/pull/171648#issuecomment-1121964568
   dpdk' = dpdk.overrideAttrs (old: rec {
     name = "dpdk-21.11";
-    src = fetchurl {
-      url = "https://fast.dpdk.org/rel/${name}.tar.xz";
-      sha256 = "sha256-Mkbj7WjuKzaaXYviwGzxCKZp4Vf01Bxby7sha/Wr06E=";
+    src = fetchFromGitHub {
+      owner = "spdk";
+      repo = "dpdk";
+      # spdk-21.11 branch as of 2022-05-11, also the exact rev referenced by the submodule in spdk
+      rev = "4fe04845e51a77dedc32fa9e378af6b35cafaceb";
+      sha256 = "sha256-lvzKFBvO8TAkCtwkkQXgtwyXhs1zybz8kw+NGrXneOg=";
     };
   });
 in stdenv.mkDerivation rec {
