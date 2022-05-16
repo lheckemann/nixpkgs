@@ -2,13 +2,13 @@
 
 stdenv.mkDerivation rec {
   name = "rtl8189es-${kernel.version}-${version}";
-  version = "2020-10-03";
+  version = "unstable-2022-03-28";
 
   src = fetchFromGitHub {
     owner = "jwrdegoede";
     repo = "rtl8189ES_linux";
-    rev = "03ac413135a355b55b693154c44b70f86a39732e";
-    sha256 = "0wiikviwyvy6h55rgdvy7csi1zqniqg26p8x44rd6mhbw0g00h56";
+    rev = "39c17661136da48f8e9c644194dce6a7f5076896";
+    sha256 = "sha256-AX3gnGLSU5/X8iohRg3PuvgWrl1vVKgZTyrUd7ffa+k=";
   };
 
   nativeBuildInputs = [ bc nukeReferences ];
