@@ -16,7 +16,7 @@ in
 rec {
   qemu-common = import ../../../nixos/lib/qemu-common.nix { inherit lib pkgs; };
 
-  qemu = buildPackages.qemu_kvm;
+  qemu = if stdenv.hostPlatform == stdenv.buildPlatform then buildPackages.qemu_kvm else buildPackages.qemu;
 
   modulesClosure = pkgs.makeModulesClosure {
     inherit kernel rootModules;
