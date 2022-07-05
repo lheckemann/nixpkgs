@@ -123,6 +123,7 @@ in stdenv.mkDerivation rec {
         --replace "env = Environment(" "env = Environment(ENV = os.environ,"
 
     sed -i '/Wredundant-move/d' SConstruct
+    sed '30a #include <optional>' -i src/mongo/db/exec/plan_stats.h
    '' + lib.optionalString (versionAtLeast version "4.4" && versionOlder version "4.6") ''
     # Fix debug gcc 11 and clang 12 builds on Fedora
     # https://github.com/mongodb/mongo/commit/e78b2bf6eaa0c43bd76dbb841add167b443d2bb0.patch
