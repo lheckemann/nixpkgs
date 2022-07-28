@@ -6,7 +6,7 @@ in {
 
   options.boot.initrd.services.swraid = {
     enable = (lib.mkEnableOption "swraid support using mdadm") // {
-      visible = false; # only has effect when the new stage 1 is in place
+      default = !config.boot.initrd.systemd.enable;
     };
 
     mdadmConf = lib.mkOption {
@@ -16,20 +16,20 @@ in {
     };
   };
 
-  config = {
+  config = lib.mkIf cfg.enable {
     environment.systemPackages = [ pkgs.mdadm ];
 
     services.udev.packages = [ pkgs.mdadm ];
 
     systemd.packages = [ pkgs.mdadm ];
 
-    boot.initrd.availableKernelModules = lib.mkIf (config.boot.initrd.systemd.enable -> cfg.enable) [ "md_mod" "raid0" "raid1" "raid10" "raid456" ];
+    boot.initrd.availableKernelModules = [ "md_mod" "raid0" "raid1" "raid10" "raid456" ];
 
     boot.initrd.extraUdevRulesCommands = lib.mkIf (!config.boot.initrd.systemd.enable) ''
       cp -v ${pkgs.mdadm}/lib/udev/rules.d/*.rules $out/
     '';
 
-    boot.initrd.systemd = lib.mkIf cfg.enable {
+    boot.initrd.systemd = {
       contents."/etc/mdadm.conf" = lib.mkIf (cfg.mdadmConf != "") {
         text = cfg.mdadmConf;
       };
@@ -38,6 +38,6 @@ in {
       initrdBin = [ pkgs.mdadm ];
     };
 
-    boot.initrd.services.udev.packages = lib.mkIf cfg.enable [ pkgs.mdadm ];
+    boot.initrd.services.udev.packages = [ pkgs.mdadm ];
   };
 }
