@@ -497,8 +497,8 @@ EOF
     # boot.initrd.luks.devices entry.
     if (-e $device) {
         my $deviceName = basename(abs_path($device));
-        if (-e "/sys/class/block/$deviceName"
-            && read_file("/sys/class/block/$deviceName/dm/uuid",  err_mode => 'quiet') =~ /^CRYPT-LUKS/)
+        my $dmUuid = read_file("/sys/class/block/$deviceName/dm/uuid",  err_mode => 'quiet');
+        if ($dmUuid =~ /^CRYPT-LUKS/)
         {
             my @slaves = glob("/sys/class/block/$deviceName/slaves/*");
             if (scalar @slaves == 1) {
@@ -513,6 +513,13 @@ EOF
                     }
                 }
             }
+        }
+        if ($dmUuid =~ /^LVM-/)
+        {
+            push @attrs, "  boot.initrd.services.lvm.enable = true;";
+        }
+        if (-e "/sys/class/block/$deviceName/md/uuid") {
+            push @attrs, "  boot.initrd.services.swraid.enable = true;\n\n"
         }
     }
 }
