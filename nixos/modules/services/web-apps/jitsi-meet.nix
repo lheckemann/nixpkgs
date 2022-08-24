@@ -269,7 +269,6 @@ in
       };
       reloadIfChanged = true;
     };
-    systemd.services.prosody.reloadIfChanged = mkIf cfg.prosody.enable true;
 
     users.groups.jitsi-meet = {};
     systemd.tmpfiles.rules = [
