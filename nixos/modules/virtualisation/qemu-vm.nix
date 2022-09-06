@@ -176,16 +176,26 @@ let
         idx=$((idx + 1))
       '')}
 
+      virtiofsd_pids=()
+      ${lib.concatStringsSep "\n" (lib.flip mapAttrsToList config.virtualisation.sharedDirectories (tag: share: ''
+        unshare -r -- ${pkgs.virtiofsd}/bin/virtiofsd --socket-path="$TMPDIR/${tag}.sock" -o source=${share.source} --cache always &
+        virtiofsd_pids+=($!)
+      ''))}
+
       # Start QEMU.
-      exec ${qemu-common.qemuBinary qemu} \
+      ${qemu-common.qemuBinary qemu} \
           -name ${config.system.name} \
           -m ${toString config.virtualisation.memorySize} \
           -smp ${toString config.virtualisation.cores} \
           -device virtio-rng-pci \
           ${concatStringsSep " " config.virtualisation.qemu.networkingOptions} \
+          -object memory-backend-file,id=mem,size=${toString config.virtualisation.memorySize}m,mem-path=/dev/shm,share=on -numa node,memdev=mem \
           ${concatStringsSep " \\\n    "
             (mapAttrsToList
-              (tag: share: "-virtfs local,path=${share.source},security_model=none,mount_tag=${tag}")
+              (tag: share: ''
+                -chardev socket,id=virtiofs-${tag},path=$TMPDIR/${tag}.sock \
+                -device vhost-user-fs-pci,queue-size=1024,chardev=virtiofs-${tag},tag=${tag} \
+              '')
               config.virtualisation.sharedDirectories)} \
           ${drivesCmdLine config.virtualisation.qemu.drives} \
           ${concatStringsSep " \\\n    " config.virtualisation.qemu.options} \
@@ -402,7 +412,7 @@ in
     virtualisation.cores =
       mkOption {
         type = types.ints.positive;
-        default = 1;
+        default = 4;
         description =
           lib.mdDoc ''
             Specify the number of cores the guest is permitted to use.
@@ -1000,11 +1010,9 @@ in
               then "/nix/.ro-store"
               else share.target;
           value.device = tag;
-          value.fsType = "9p";
+          value.fsType = "virtiofs";
           value.neededForBoot = true;
-          value.options =
-            [ "trans=virtio" "version=9p2000.L"  "msize=${toString cfg.msize}" ]
-            ++ lib.optional (tag == "nix-store") "cache=loose";
+          #value.options = ["user_id=0" "group_id=0" "allow_other"];
         };
     in
       mkVMOverride (cfg.fileSystems //
