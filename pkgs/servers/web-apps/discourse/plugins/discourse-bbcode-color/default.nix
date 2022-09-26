@@ -5,8 +5,8 @@ mkDiscoursePlugin {
   src = fetchFromGitHub {
     owner = "discourse";
     repo = "discourse-bbcode-color";
-    rev = "f9ebbf016c8c5c763473ff36cc30fdcdf8fcf480";
-    sha256 = "sha256-7iCKhMdVlFdHMXxU8mQMU1vFiAbr1qKvG29VdAki+14=";
+    rev = "5446fd3964d49c2f1201659c901cefe2da4e0e1d";
+    sha256 = "sha256-eVYY/uZCqJeCN6IA0sSKpbiU4pBXlpqJ4nFcBXfMfg8=";
   };
   meta = with lib; {
     homepage = "https://github.com/discourse/discourse-bbcode-color";
