@@ -43,5 +43,5 @@ in
   discourse-voting = callPackage ./discourse-voting {};
   discourse-whos-online = callPackage ./discourse-whos-online {};
   discourse-yearly-review = callPackage ./discourse-yearly-review {};
-  discourse-zendesk-plugin = callPackage ./discourse-zendesk-plugin {};
+  # discourse-zendesk-plugin = callPackage ./discourse-zendesk-plugin {};
 }
