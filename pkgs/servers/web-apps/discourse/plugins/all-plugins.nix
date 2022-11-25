@@ -16,7 +16,6 @@ in
   discourse-checklist = callPackage ./discourse-checklist {};
   discourse-data-explorer = callPackage ./discourse-data-explorer {};
   discourse-docs = callPackage ./discourse-docs {};
-  discourse-events = callPackage ./discourse-events {};
   discourse-follow = callPackage ./discourse-follow {};
   discourse-footnote = callPackage ./discourse-footnote {};
   discourse-gamification = callPackage ./discourse-gamification {};
