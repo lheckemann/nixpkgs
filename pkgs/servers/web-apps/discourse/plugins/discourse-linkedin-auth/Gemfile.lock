@@ -25,7 +25,7 @@ GEM
       oauth2 (>= 1.4, < 3)
       omniauth (~> 2.0)
     rack (3.0.1)
-    rack-protection (3.0.3)
+    rack-protection (3.0.4)
       rack
     ruby2_keywords (0.0.5)
     snaky_hash (2.0.1)
