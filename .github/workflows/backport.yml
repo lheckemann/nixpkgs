@@ -36,4 +36,4 @@ jobs:
 
             * [ ] Before merging, ensure that this backport complies with the [Criteria for Backporting](https://github.com/NixOS/nixpkgs/blob/master/CONTRIBUTING.md#criteria-for-backporting-changes).
               * Even as a non-commiter, if you find that it does not comply, leave a comment.
-          copy_labels_pattern: ^severity:
+          copy_labels_pattern: "^severity:"
