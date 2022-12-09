@@ -38,8 +38,8 @@ mkDerivation rec {
   pname = "openscad";
   version = "unstable-2022-12-06";
 
-  src = builtins.fetchGit ~/projects/openscad;
-  _src = fetchFromGitHub {
+  #src = builtins.fetchGit ~/projects/openscad;
+  src = fetchFromGitHub {
     owner = "openscad";
     repo = "openscad";
     rev = "972d1846400bfce71e20cfe94683daeeed25ba1d";
