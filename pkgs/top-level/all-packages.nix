@@ -28982,8 +28982,6 @@ with pkgs;
     inherit (gst_all_1) gstreamer gst-plugins-base gst-plugins-good;
   };
 
-  freerdpUnstable = freerdp;
-
   friture = libsForQt5.callPackage ../applications/audio/friture {
     python3Packages = python39Packages;
   };
