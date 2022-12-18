@@ -62,6 +62,7 @@ mkDerivation rec {
     "-DENABLE_TESTS=OFF"
     #"-DLIB3MF_INCLUDE_DIRS=${lib.getDev lib3mf}/include/lib3mf"
     "-DOPENSCAD_VERSION=2022.12.08"
+    "-DEXPERIMENTAL=ON"
   ];
 
   qmakeFlags = [ "VERSION=${version}" ] ++
