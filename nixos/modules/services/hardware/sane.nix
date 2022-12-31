@@ -28,7 +28,7 @@ let
   };
 
   env = {
-    SANE_CONFIG_DIR = "/etc/sane.d";
+    SANE_CONFIG_DIR = "/etc/sane-config";
     LD_LIBRARY_PATH = [ "/etc/sane-libs" ];
   };
 
@@ -126,6 +126,15 @@ in
       '';
     };
 
+    hardware.sane.openFirewall = mkOption {
+      type = types.bool;
+      default = false;
+      description = lib.mdDoc ''
+        Open ports needed for discovery of scanners on the local network, e.g.
+        needed for Canon scanners (BJNP protocol).
+      '';
+    };
+
     services.saned.enable = mkOption {
       type = types.bool;
       default = false;
@@ -158,11 +167,12 @@ in
 
       environment.systemPackages = backends;
       environment.sessionVariables = env;
-      environment.etc."sane.d".source = config.hardware.sane.configDir;
+      environment.etc."sane-config".source = config.hardware.sane.configDir;
       environment.etc."sane-libs".source = "${saneConfig}/lib/sane";
       services.udev.packages = backends;
 
       users.groups.scanner.gid = config.ids.gids.scanner;
+      networking.firewall.allowedUDPPorts = mkIf config.hardware.sane.openFirewall [ 8612 ];
     })
 
     (mkIf config.services.saned.enable {

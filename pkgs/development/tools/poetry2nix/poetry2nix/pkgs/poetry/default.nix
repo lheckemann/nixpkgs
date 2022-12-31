@@ -34,8 +34,8 @@ poetry2nix.mkPoetryApplication {
 
     mkdir -p "$out/share/bash-completion/completions"
     "$out/bin/poetry" completions bash > "$out/share/bash-completion/completions/poetry"
-    mkdir -p "$out/share/zsh/vendor-completions"
-    "$out/bin/poetry" completions zsh > "$out/share/zsh/vendor-completions/_poetry"
+    mkdir -p "$out/share/zsh/site-functions"
+    "$out/bin/poetry" completions zsh > "$out/share/zsh/site-functions/_poetry"
     mkdir -p "$out/share/fish/vendor_completions.d"
     "$out/bin/poetry" completions fish > "$out/share/fish/vendor_completions.d/poetry.fish"
   '';
@@ -52,5 +52,8 @@ poetry2nix.mkPoetryApplication {
   meta = with lib; {
     inherit (python.meta) platforms;
     maintainers = with maintainers; [ adisbladis jakewaksbaum ];
+    knownVulnerabilities = [
+      "CVE-2022-42966"  # cleo version in poetry.lock is vulnerable
+    ];
   };
 }
