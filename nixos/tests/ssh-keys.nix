@@ -1,15 +1,13 @@
-pkgs:
-{ snakeOilPrivateKey = pkgs.writeText "privkey.snakeoil" ''
-    -----BEGIN EC PRIVATE KEY-----
-    MHcCAQEEIHQf/khLvYrQ8IOika5yqtWvI0oquHlpRLTZiJy5dRJmoAoGCCqGSM49
-    AwEHoUQDQgAEKF0DYGbBwbj06tA3fd/+yP44cvmwmHBWXZCKbS+RQlAKvLXMWkpN
-    r1lwMyJZoSGgBHoUahoYjTh9/sJL7XLJtA==
-    -----END EC PRIVATE KEY-----
+pkgs: {
+  snakeOilPrivateKey = pkgs.writeText "privkey.snakeoil" ''
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+    QyNTUxOQAAACDU1CXsrYzqBACxqeqgW88p+W7sXH5AA31aXrIgLy/f+wAAAKAizFq8Isxa
+    vAAAAAtzc2gtZWQyNTUxOQAAACDU1CXsrYzqBACxqeqgW88p+W7sXH5AA31aXrIgLy/f+w
+    AAAECuU0YwozDP0PBMxhqvqwFjbUVogRIUgcCKiasZvBCWVNTUJeytjOoEALGp6qBbzyn5
+    buxcfkADfVpesiAvL9/7AAAAHHNuYWtlb2lsIGtleSBmb3Igbml4b3MgdGVzdHMB
+    -----END OPENSSH PRIVATE KEY-----
   '';
 
-  snakeOilPublicKey = pkgs.lib.concatStrings [
-    "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHA"
-    "yNTYAAABBBChdA2BmwcG49OrQN33f/sj+OHL5sJhwVl2Qim0vkUJQCry1zFpKTa"
-    "9ZcDMiWaEhoAR6FGoaGI04ff7CS+1yybQ= snakeoil"
-  ];
+  snakeOilPublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINTUJeytjOoEALGp6qBbzyn5buxcfkADfVpesiAvL9/7 snakeoil key for nixos tests";
 }

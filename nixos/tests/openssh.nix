@@ -1,4 +1,4 @@
-import ./make-test-python.nix ({ pkgs, ... }:
+import ./make-test-python.nix ({ pkgs, lib, ... }:
 
 let inherit (import ./ssh-keys.nix pkgs)
       snakeOilPrivateKey snakeOilPublicKey;
@@ -53,7 +53,12 @@ in {
       };
 
     client =
-      { ... }: { };
+      { ... }: {
+        programs.ssh.knownHosts = {
+          server.publicKey = snakeOilPublicKey;
+          server_lazy.publicKeyFile = pkgs.writeText "snakeoil-host-key" snakeOilPublicKey;
+        };
+      };
 
   };
 
@@ -61,6 +66,15 @@ in {
     start_all()
 
     server.wait_for_unit("sshd")
+    server.succeed("cp ${snakeOilPrivateKey} /etc/ssh/ssh_host_ed25519_key")
+    server.succeed("cat ${lib.escapeShellArg snakeOilPrivateKey} >/etc/ssh/ssh_host_ed25519_key.pub")
+    server.succeed("chmod 0600 /etc/ssh/ssh_host_ed25519_key")
+
+    server_lazy.succeed("cp ${snakeOilPrivateKey} /etc/ssh/ssh_host_ed25519_key")
+    server_lazy.succeed("cat ${lib.escapeShellArg snakeOilPrivateKey} >/etc/ssh/ssh_host_ed25519_key.pub")
+    server_lazy.succeed("chmod 0600 /etc/ssh/ssh_host_ed25519_key")
+
+    client.succeed("cat /etc/ssh/ssh_known_hosts")
 
     with subtest("manual-authkey"):
         client.succeed("mkdir -m 700 /root/.ssh")
@@ -80,20 +94,20 @@ in {
 
         client.wait_for_unit("network.target")
         client.succeed(
-            "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no server 'echo hello world' >&2",
+            "ssh -vvv server 'echo hello world' >&2",
             timeout=30
         )
         client.succeed(
-            "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no server 'ulimit -l' | grep 1024",
+            "ssh server 'ulimit -l' | grep 1024",
             timeout=30
         )
 
         client.succeed(
-            "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no server_lazy 'echo hello world' >&2",
+            "ssh server_lazy 'echo hello world' >&2",
             timeout=30
         )
         client.succeed(
-            "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no server_lazy 'ulimit -l' | grep 1024",
+            "ssh server_lazy 'ulimit -l' | grep 1024",
             timeout=30
         )
 
@@ -103,11 +117,11 @@ in {
         )
         client.succeed("chmod 600 privkey.snakeoil")
         client.succeed(
-            "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i privkey.snakeoil server true",
+            "ssh -i privkey.snakeoil server true",
             timeout=30
         )
         client.succeed(
-            "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i privkey.snakeoil server_lazy true",
+            "ssh -i privkey.snakeoil server_lazy true",
             timeout=30
         )
 

@@ -20,11 +20,19 @@ let
 
   knownHosts = attrValues cfg.knownHosts;
 
-  knownHostsText = (flip (concatMapStringsSep "\n") knownHosts
+  knownHostsFile = pkgs.runCommand "known_hosts" {} ''
+    exec >$out
+  '' +
+    (flip concatMapStrings knownHosts
     (h: assert h.hostNames != [];
-      optionalString h.certAuthority "@cert-authority " + concatStringsSep "," h.hostNames + " "
-      + (if h.publicKey != null then h.publicKey else readFile h.publicKeyFile)
-    )) + "\n";
+      ''
+        printf %s ${lib.escapeShellArg (optionalString h.certAuthority "@cert-authority " + concatStringsSep "," h.hostNames + " ")}"
+        ${if h.publicKey != null
+          then "printf '%s\n' ${lib.escapeShellArg h.publicKey}"
+          else "cat ${lib.escapeShellArg h.publicKeyFile}"
+        }
+      ''
+    ));
 
   knownHostsFiles = [ "/etc/ssh/ssh_known_hosts" "/etc/ssh/ssh_known_hosts2" ]
     ++ map pkgs.copyPathToStore cfg.knownHostsFiles;
@@ -319,7 +327,7 @@ in
         ${optionalString (cfg.macs != null) "MACs ${concatStringsSep "," cfg.macs}"}
       '';
 
-    environment.etc."ssh/ssh_known_hosts".text = knownHostsText;
+    environment.etc."ssh/ssh_known_hosts".source = knownHostsFile;
 
     # FIXME: this should really be socket-activated for über-awesomeness.
     systemd.user.services.ssh-agent = mkIf cfg.startAgent
