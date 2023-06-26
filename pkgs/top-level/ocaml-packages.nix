@@ -1081,6 +1081,8 @@ let
 
     ### N ###
 
+    nbd = callPackage ../development/ocaml-modules/nbd { };
+
     netchannel = callPackage ../development/ocaml-modules/netchannel { };
 
     nonstd =  callPackage ../development/ocaml-modules/nonstd { };
