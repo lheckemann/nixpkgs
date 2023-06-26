@@ -472,15 +472,6 @@ in
         host  all all ::1/128      md5
       '';
 
-    users.users.postgres =
-      { name = "postgres";
-        uid = config.ids.uids.postgres;
-        group = "postgres";
-        description = "PostgreSQL server user";
-        home = "${cfg.dataDir}";
-        useDefaultShell = true;
-      };
-
     users.groups.postgres.gid = config.ids.gids.postgres;
 
     environment.systemPackages = [ postgresql ];
@@ -503,6 +494,7 @@ in
 
         preStart =
           ''
+            set -x
             if ! test -e ${cfg.dataDir}/PG_VERSION; then
               # Cleanup the data directory.
               rm -f ${cfg.dataDir}/*.conf
@@ -524,6 +516,7 @@ in
         # Wait for PostgreSQL to be ready to accept connections.
         postStart =
           ''
+            set -x
             PSQL="psql --port=${toString cfg.port}"
 
             while ! $PSQL -d postgres -c "" 2> /dev/null; do
@@ -569,7 +562,6 @@ in
 
         serviceConfig = mkMerge [
           { ExecReload = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
-            User = "postgres";
             Group = "postgres";
             RuntimeDirectory = "postgresql";
             Type = if versionAtLeast cfg.package.version "9.6"
@@ -584,6 +576,7 @@ in
             # Give Postgres a decent amount of time to clean up after
             # receiving systemd's SIGINT.
             TimeoutSec = 120;
+            DynamicUser = true;
 
             ExecStart = "${postgresql}/bin/postgres";
           }
