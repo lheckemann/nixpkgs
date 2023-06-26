@@ -1,6 +1,6 @@
 { lib, stdenv, /*fetchFromGitHub,*/ fetchgit, autoreconfHook, pkg-config
 , cdrkit, xorriso, libguestfs, libnbd, pcre2, libvirt, libxml2, jansson
-, libosinfo, gobject-introspection, ocamlPackages
+, libosinfo, gobject-introspection, ocamlPackages, perl, qemu-utils, cpio
 }:
 
 stdenv.mkDerivation rec {
@@ -22,7 +22,12 @@ stdenv.mkDerivation rec {
     hash = "sha256-FtsrbY8ER5KQFUx2x3SqmP9lXyVu5USrjLogagCjJjY=";
   };
 
-  nativeBuildInputs = [ autoreconfHook pkg-config ];
+  postPatch = ''
+    patchShebangs ocaml-dep.sh.in ocaml-link.sh.in
+  '';
+
+
+  nativeBuildInputs = [ autoreconfHook pkg-config perl qemu-utils cpio ];
 
   # TODO: Consider taking all inputs from libguestfs?
   buildInputs = [
@@ -41,7 +46,7 @@ stdenv.mkDerivation rec {
     ocamlPackages.ocaml
     ocamlPackages.findlib
     ocamlPackages.ocaml_libvirt
-    #ocamlPackages.libnbd  # FIXME: missing
+    ocamlPackages.nbd
   ];
 
   meta = {
