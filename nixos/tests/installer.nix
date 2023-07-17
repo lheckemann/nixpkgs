@@ -587,11 +587,21 @@ in {
           "udevadm settle",
           "mkswap /dev/vda1 -L swap",
           "swapon -L swap",
-          "zpool create rpool /dev/vda2",
+          "zpool create -o altroot=/mnt rpool /dev/vda2",
           "zfs create -o mountpoint=legacy rpool/root",
           "mount -t zfs rpool/root /mnt",
+          "zfs create -o setuid=off -o mountpoint=/srv rpool/srv",
+          "findmnt /mnt/srv",
           "udevadm settle",
       )
+    '';
+
+    # Ensure that the setuid=off setting is respected.
+    postBootCommands = ''
+      machine.succeed("cp ${pkgs.sudo}/bin/sudo /srv/sudo")
+      machine.succeed("chmod u+s /srv/sudo")
+      # even sudo --help will fail if it's not setuid.
+      machine.fail("sudo -u nobody /srv/sudo --help")
     '';
   };
 
