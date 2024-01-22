@@ -33594,8 +33594,6 @@ with pkgs;
     inherit (gnome) zenity;
   };
 
-  meshcentral = callPackage ../tools/admin/meshcentral { };
-
   meshlab = libsForQt5.callPackage ../applications/graphics/meshlab { };
 
   metadata-cleaner = callPackage ../applications/misc/metadata-cleaner { };
