@@ -16643,6 +16643,8 @@ with pkgs;
   llvm_16 = llvmPackages_16.llvm;
   llvm_17 = llvmPackages_17.llvm;
 
+  mlir_17 = llvmPackages_17.mlir;
+
   libllvm = llvmPackages.libllvm;
   llvm-manpages = llvmPackages.llvm-manpages;
 
@@ -27115,9 +27117,6 @@ with pkgs;
   OVMF = callPackage ../applications/virtualization/OVMF { };
   OVMFFull = callPackage ../applications/virtualization/OVMF {
     secureBoot = true;
-    # CSM support is a BIOS emulation mechanism,
-    # SeaBIOS is only available on x86.
-    csmSupport = stdenv.hostPlatform.isx86;
     httpSupport = true;
     tpmSupport = true;
   };
@@ -27487,6 +27486,7 @@ with pkgs;
 
   inherit (callPackages ../servers/web-apps/matomo {})
     matomo
+    matomo_5
     matomo-beta;
 
   axis2 = callPackage ../servers/http/tomcat/axis2 { };

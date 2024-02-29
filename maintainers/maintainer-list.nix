@@ -5577,7 +5577,7 @@
   };
   etu = {
     email = "elis@hirwing.se";
-    matrix = "@etu:semi.social";
+    matrix = "@etu:failar.nu";
     github = "etu";
     githubId = 461970;
     name = "Elis Hirwing";
@@ -15007,6 +15007,12 @@
     name = "Rafael Carvalho";
     github = "rafaelrc7";
     githubId = 5376043;
+  };
+  rafameou = {
+    email = "rafaelmazz22@gmail.com";
+    name = "Rafael Mazzutti";
+    github = "rafameou";
+    githubId = 26395874;
   };
   ragge = {
     email = "r.dahlen@gmail.com";
