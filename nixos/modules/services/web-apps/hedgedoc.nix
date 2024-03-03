@@ -14,7 +14,7 @@ let
   else
     "codimd";
 
-  settingsFormat = pkgs.formats.json { };
+  settingsFormat = pkgs.formats.jsonWithRuntimeSubstitution { };
 in
 {
   meta.maintainers = with lib.maintainers; [ SuperSandro2000 h7x4 ];
@@ -197,34 +197,6 @@ in
         for documentation.
       '';
     };
-
-    environmentFile = mkOption {
-      type = with types; nullOr path;
-      default = null;
-      example = "/var/lib/hedgedoc/hedgedoc.env";
-      description = mdDoc ''
-        Environment file as defined in {manpage}`systemd.exec(5)`.
-
-        Secrets may be passed to the service without adding them to the world-readable
-        Nix store, by specifying placeholder variables as the option value in Nix and
-        setting these variables accordingly in the environment file.
-
-        ```
-          # snippet of HedgeDoc-related config
-          services.hedgedoc.settings.dbURL = "postgres://hedgedoc:\''${DB_PASSWORD}@db-host:5432/hedgedocdb";
-          services.hedgedoc.settings.minio.secretKey = "$MINIO_SECRET_KEY";
-        ```
-
-        ```
-          # content of the environment file
-          DB_PASSWORD=verysecretdbpassword
-          MINIO_SECRET_KEY=verysecretminiokey
-        ```
-
-        Note that this file needs to be available on the host on which
-        `HedgeDoc` is running.
-      '';
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -248,14 +220,12 @@ in
       after = [ "networking.target" ];
       preStart =
         let
-          configFile = settingsFormat.generate "hedgedoc-config.json" {
+          configGenerator = settingsFormat.generate "hedgedoc-config.json" {
             production = cfg.settings;
           };
         in
         ''
-          ${pkgs.envsubst}/bin/envsubst \
-            -o /run/${name}/config.json \
-            -i ${configFile}
+          ${configGenerator} > /run/${name}/config.json
           ${pkgs.coreutils}/bin/mkdir -p ${cfg.settings.uploadsPath}
         '';
       serviceConfig = {
@@ -270,7 +240,6 @@ in
         ReadWritePaths = [
           "-${cfg.settings.uploadsPath}"
         ] ++ lib.optionals (cfg.settings.db ? "storage") [ "-${cfg.settings.db.storage}" ];
-        EnvironmentFile = lib.mkIf (cfg.environmentFile != null) [ cfg.environmentFile ];
         Environment = [
           "CMD_CONFIG_FILE=/run/${name}/config.json"
           "NODE_ENV=production"
