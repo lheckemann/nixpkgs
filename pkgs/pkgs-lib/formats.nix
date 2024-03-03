@@ -69,6 +69,60 @@ rec {
 
   };
 
+  jsonWithRuntimeSubstitution = {}: rec {
+    type = with lib.types; let
+      valueType = nullOr (oneOf [
+        bool
+        int
+        float
+        str
+        path
+        (submodule {
+          freeformType = valueType;
+          options._runtimePath = lib.mkOption {
+            type = nullOr str;
+          };
+        })
+        (listOf valueType)
+      ]) // {
+        description = "JSON value";
+      };
+    in valueType;
+
+    runtimeString = path: {_runtimePath = path;};
+
+    findSubstitutions = let
+      prefixSubstitution = attrOrIndex: {attrpath, filepath}: { attrpath = [attrOrIndex] ++ attrpath; inherit filepath; };
+    in value:
+        if lib.isBool value || lib.isInt value || lib.isFloat value || lib.isString value || lib.isPath value then []
+        else
+          if lib.isList value then
+            lib.concatLists (lib.imap0 (index: value: map (prefixSubstitution index) (findSubstitutions value)) value)
+          else if lib.isAttrs value then
+            if value._runtimePath or null == null then
+              lib.concatLists (lib.mapAttrsToList (name: value: map (prefixSubstitution name) (findSubstitutions value)) value)
+            else
+              assert lib.attrNames value == ["_runtimePath"];
+              [{attrpath = []; filepath = value._runtimePath;}]
+          else
+            throw "unexpected type"
+    ;
+
+    generate = filename: value: let
+      substitutions = findSubstitutions value;
+      substitutionToJq = index: { attrpath, ... }:
+        "| " + lib.concatMapStrings (attr: "." + (if lib.isString attr then builtins.toJSON attr else "[${toString attr}]")) attrpath
+        + " = $ENV.file${toString index}"
+      ;
+      jqScript = ".\n" + (lib.concatStrings (lib.imap0 substitutionToJq substitutions));
+    in pkgs.writeShellScript "generate-${filename}.sh" ''
+      jq \
+        ${lib.concatStrings (lib.imap0 (index: { filepath, ... }: "--rawfile file${toString index} ${lib.escapeShellArg filepath} \\\n") substitutions)}
+        < ${(json {}).generate "${filename}-unsubstituted" value} \
+        ${lib.escapeShellArg jqScript}
+    '';
+  };
+
   yaml = {}: {
 
     generate = name: value: pkgs.callPackage ({ runCommand, remarshal }: runCommand name {
