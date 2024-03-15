@@ -4,6 +4,7 @@ with lib;
 
 let
   cfg = config.services.onlyoffice;
+  jsonFormat = pkgs.formats.jsonWithRuntimeSubstitution {};
 in
 {
   options.services.onlyoffice = {
@@ -79,6 +80,12 @@ in
       type = types.str;
       default = "amqp://guest:guest@localhost:5672";
       description = lib.mdDoc "The Rabbitmq in amqp URI style OnlyOffice should connect to.";
+    };
+
+    settings = mkOption {
+      type = types.submodule {
+        freeformType = jsonFormat.type;
+      };
     };
   };
 
@@ -201,6 +208,25 @@ in
           ensureDBOwnership = true;
         }];
       };
+
+      onlyoffice.settings.rabbitmq.url = cfg.rabbitmqUrl;
+      onlyoffice.settings.services.CoAuthoring = lib.mkMerge [
+        {
+          server.port = cfg.port;
+          sql.dbHost = cfg.postgresHost;
+          sql.dbName = cfg.postgresName;
+          sql.dbPass = lib.mkIf (cfg.postgresPasswordFile != null) (lib.stringFromRuntimeFile cfg.postgresPasswordFile);
+          sql.dbUser = cfg.postgresUser;
+        }
+        (lib.mkIf (cfg.jwtSecretFile != null) {
+          token.enable.browser = true;
+          token.enable.request.inbox = true;
+          token.enable.request.outbox = true;
+          secret.inbox.string = lib.stringFromRuntimeFile cfg.jwtSecretFile;
+          secret.outbox.string = lib.stringFromRuntimeFile cfg.jwtSecretFile;
+          secret.session.string = lib.stringFromRuntimeFile cfg.jwtSecretFile;
+        })
+      ];
     };
 
     systemd.services = {
@@ -236,24 +262,8 @@ in
 
             # for a mapping of environment variables from the docker container to json options see
             # https://github.com/ONLYOFFICE/Docker-DocumentServer/blob/master/run-document-server.sh
-            jq '
-              .services.CoAuthoring.server.port = ${toString cfg.port} |
-              .services.CoAuthoring.sql.dbHost = "${cfg.postgresHost}" |
-              .services.CoAuthoring.sql.dbName = "${cfg.postgresName}" |
-            ${lib.optionalString (cfg.postgresPasswordFile != null) ''
-              .services.CoAuthoring.sql.dbPass = "'"$(cat ${cfg.postgresPasswordFile})"'" |
-            ''}
-              .services.CoAuthoring.sql.dbUser = "${cfg.postgresUser}" |
-            ${lib.optionalString (cfg.jwtSecretFile != null) ''
-              .services.CoAuthoring.token.enable.browser = true |
-              .services.CoAuthoring.token.enable.request.inbox = true |
-              .services.CoAuthoring.token.enable.request.outbox = true |
-              .services.CoAuthoring.secret.inbox.string = "'"$(cat ${cfg.jwtSecretFile})"'" |
-              .services.CoAuthoring.secret.outbox.string = "'"$(cat ${cfg.jwtSecretFile})"'" |
-              .services.CoAuthoring.secret.session.string = "'"$(cat ${cfg.jwtSecretFile})"'" |
-            ''}
-              .rabbitmq.url = "${cfg.rabbitmqUrl}"
-              ' /run/onlyoffice/config/default.json | sponge /run/onlyoffice/config/default.json
+            ${jsonFormat.generate "onlyoffice-nixos.json" cfg.settings} > /run/onlyoffice/config/nixos.json
+            jq '. * $nixos[0]' /run/onlyoffice/config/default.json.orig --slurpfile nixos /run/onlyoffice/config/nixos.json > /run/onlyoffice/config/default.json
 
             if psql -d onlyoffice -c "SELECT 'task_result'::regclass;" >/dev/null; then
               psql -f ${cfg.package}/var/www/onlyoffice/documentserver/server/schema/postgresql/removetbl.sql
