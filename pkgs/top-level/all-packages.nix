@@ -2949,6 +2949,8 @@ with pkgs;
 
   felix-fm = callPackage ../applications/file-managers/felix-fm { };
 
+  joshuto = callPackage ../applications/file-managers/joshuto { };
+
   krusader = libsForQt5.callPackage ../applications/file-managers/krusader { };
 
   lesscpy = callPackage ../development/compilers/lesscpy { };
@@ -5241,7 +5243,7 @@ with pkgs;
 
   element-desktop = callPackage ../applications/networking/instant-messengers/element/element-desktop.nix {
     inherit (darwin.apple_sdk.frameworks) Security AppKit CoreServices;
-    electron = electron_28;
+    electron = electron_29;
   };
   element-desktop-wayland = writeScriptBin "element-desktop" ''
     #!/bin/sh
@@ -7191,8 +7193,9 @@ with pkgs;
 
   ckb-next = libsForQt5.callPackage ../tools/misc/ckb-next { };
 
-  clamav = darwin.apple_sdk_11_0.callPackage ../tools/security/clamav {
-    inherit (darwin.apple_sdk_11_0.frameworks) Foundation;
+  clamav = callPackage ../tools/security/clamav {
+    stdenv = if stdenv.isDarwin then overrideSDK stdenv "11.0" else stdenv;
+    inherit (darwin.apple_sdk.frameworks) Foundation;
   };
 
   client-ip-echo = callPackage ../servers/misc/client-ip-echo { };
@@ -7667,7 +7670,7 @@ with pkgs;
   };
 
   dump_syms = callPackage ../development/tools/dump_syms {
-    inherit (darwin.apple_sdk.frameworks) Security;
+    inherit (darwin.apple_sdk.frameworks) Security SystemConfiguration;
   };
 
   dumpasn1 = callPackage ../tools/security/dumpasn1 { };
@@ -10139,7 +10142,9 @@ with pkgs;
 
   mdbook-d2 = callPackage ../tools/text/mdbook-d2 { };
 
-  mdbook-pagetoc = callPackage ../tools/text/mdbook-pagetoc { };
+  mdbook-pagetoc = callPackage ../tools/text/mdbook-pagetoc {
+    inherit (rustPackages_1_76) rustPlatform;
+  };
 
   mdbook-graphviz = callPackage ../tools/text/mdbook-graphviz {
     inherit (darwin.apple_sdk.frameworks) CoreServices;
@@ -11211,7 +11216,7 @@ with pkgs;
   grocy = callPackage ../servers/grocy { };
 
   inherit (callPackages ../servers/nextcloud {})
-    nextcloud25 nextcloud26 nextcloud27 nextcloud28;
+    nextcloud25 nextcloud26 nextcloud27 nextcloud28 nextcloud29;
 
   nextcloud25Packages = throw "Nextcloud25 is EOL!";
   nextcloud26Packages = callPackage ../servers/nextcloud/packages {
@@ -11223,6 +11228,10 @@ with pkgs;
   nextcloud28Packages = callPackage ../servers/nextcloud/packages {
     apps = lib.importJSON ../servers/nextcloud/packages/28.json;
   };
+  nextcloud29Packages = callPackage ../servers/nextcloud/packages {
+    apps = lib.importJSON ../servers/nextcloud/packages/29.json;
+  };
+
 
   nextcloud-client = libsForQt5.callPackage ../applications/networking/nextcloud-client { };
 
@@ -12011,8 +12020,6 @@ with pkgs;
   pdfminer = with python3Packages; toPythonApplication pdfminer-six;
 
   pdf-quench = callPackage ../applications/misc/pdf-quench { };
-
-  pdf-sign = callPackage ../tools/graphics/pdf-sign { };
 
   pdfarranger = callPackage ../applications/misc/pdfarranger { };
 
@@ -14247,6 +14254,11 @@ with pkgs;
   typesense = callPackage ../servers/search/typesense { };
 
   typos = callPackage ../development/tools/typos { };
+
+  # Requires rustc 1.75 or newer
+  typos-lsp = callPackage ../by-name/ty/typos-lsp/package.nix {
+    inherit (rustPackages_1_76) rustPlatform;
+  };
 
   typst = callPackage ../tools/typesetting/typst { };
 
@@ -16998,10 +17010,12 @@ with pkgs;
   cargo-all-features = callPackage ../development/tools/rust/cargo-all-features { };
   cargo-apk = callPackage ../development/tools/rust/cargo-apk { };
   cargo-audit = callPackage ../development/tools/rust/cargo-audit {
-    inherit (darwin.apple_sdk.frameworks) Security;
+    inherit (darwin.apple_sdk.frameworks) Security SystemConfiguration;
   };
   cargo-benchcmp = callPackage ../development/tools/rust/cargo-benchcmp { };
-  cargo-binstall = callPackage ../development/tools/rust/cargo-binstall { };
+  cargo-binstall = callPackage ../development/tools/rust/cargo-binstall {
+    inherit (rustPackages_1_76) rustPlatform;
+  };
   cargo-bisect-rustc = callPackage ../development/tools/rust/cargo-bisect-rustc {
     inherit (darwin.apple_sdk.frameworks) Security;
   };
@@ -17018,7 +17032,9 @@ with pkgs;
       inherit rustc cargo;
     };
   };
-  cargo-component = callPackage ../development/tools/rust/cargo-component { };
+  cargo-component = callPackage ../development/tools/rust/cargo-component {
+    inherit (rustPackages_1_76) rustPlatform;
+  };
   cargo-cranky = callPackage ../development/tools/rust/cargo-cranky { };
   cargo-criterion = callPackage ../development/tools/rust/cargo-criterion { };
   cargo-cyclonedx = callPackage ../development/tools/rust/cargo-cyclonedx {
@@ -17030,7 +17046,9 @@ with pkgs;
   cargo-deb = callPackage ../development/tools/rust/cargo-deb { };
   cargo-deps = callPackage ../development/tools/rust/cargo-deps { };
   cargo-docset = callPackage ../development/tools/rust/cargo-docset { };
-  cargo-duplicates = callPackage ../development/tools/rust/cargo-duplicates { };
+  cargo-duplicates = callPackage ../development/tools/rust/cargo-duplicates {
+    inherit (rustPackages_1_76) rustPlatform;
+  };
   cargo-edit = callPackage ../development/tools/rust/cargo-edit {
     inherit (darwin.apple_sdk.frameworks) Security;
   };
@@ -17041,7 +17059,9 @@ with pkgs;
   cargo-hack = callPackage ../development/tools/rust/cargo-hack { };
   cargo-license = callPackage ../development/tools/rust/cargo-license { };
   cargo-llvm-cov = callPackage ../development/tools/rust/cargo-llvm-cov { };
-  cargo-llvm-lines = callPackage ../development/tools/rust/cargo-llvm-lines { };
+  cargo-llvm-lines = callPackage ../development/tools/rust/cargo-llvm-lines {
+    inherit (rustPackages_1_76) rustPlatform;
+  };
   cargo-local-registry = callPackage ../development/tools/rust/cargo-local-registry { };
   cargo-lock = callPackage ../development/tools/rust/cargo-lock { };
   cargo-machete = callPackage ../development/tools/rust/cargo-machete { };
@@ -17081,7 +17101,6 @@ with pkgs;
     inherit (darwin.apple_sdk.frameworks) Security;
   };
   cargo-binutils = callPackage ../development/tools/rust/cargo-binutils { };
-  cargo-bloat = callPackage ../development/tools/rust/cargo-bloat { };
   cargo-bolero = callPackage ../development/tools/rust/cargo-bolero { };
   cargo-bundle = callPackage ../development/tools/rust/cargo-bundle { };
   cargo-bundle-licenses = callPackage ../development/tools/rust/cargo-bundle-licenses { };
@@ -17089,16 +17108,22 @@ with pkgs;
     inherit (darwin.apple_sdk.frameworks) Security;
   };
   cargo-careful = callPackage ../development/tools/rust/cargo-careful { };
-  cargo-chef = callPackage ../development/tools/rust/cargo-chef { };
+  cargo-chef = callPackage ../development/tools/rust/cargo-chef {
+    inherit (rustPackages_1_76) rustPlatform;
+  };
   cargo-crev = callPackage ../development/tools/rust/cargo-crev {
     inherit (darwin.apple_sdk.frameworks) Security SystemConfiguration CoreFoundation;
   };
   cargo-cross = callPackage ../development/tools/rust/cargo-cross { };
-  cargo-deny = callPackage ../development/tools/rust/cargo-deny { };
+  cargo-deny = callPackage ../development/tools/rust/cargo-deny {
+    inherit (rustPackages_1_76) rustPlatform;
+  };
   cargo-depgraph = callPackage ../development/tools/rust/cargo-depgraph { };
   cargo-dephell = callPackage ../development/tools/rust/cargo-dephell { };
   cargo-diet = callPackage ../development/tools/rust/cargo-diet { };
-  cargo-dist = callPackage ../development/tools/rust/cargo-dist { };
+  cargo-dist = callPackage ../development/tools/rust/cargo-dist {
+    inherit (rustPackages_1_76) rustPlatform;
+  };
   cargo-espmonitor = callPackage ../development/tools/rust/cargo-espmonitor { };
   cargo-expand = callPackage ../development/tools/rust/cargo-expand { };
   cargo-hakari = callPackage ../development/tools/rust/cargo-hakari { };
@@ -17145,10 +17170,14 @@ with pkgs;
   cargo-readme = callPackage ../development/tools/rust/cargo-readme { };
   cargo-risczero = callPackage ../development/tools/rust/cargo-risczero { };
   cargo-run-bin = callPackage ../development/tools/rust/cargo-run-bin {};
-  cargo-semver-checks = callPackage ../development/tools/rust/cargo-semver-checks { };
+  cargo-semver-checks = callPackage ../development/tools/rust/cargo-semver-checks {
+    inherit (rustPackages_1_76) rustPlatform;
+  };
 
   cargo-show-asm = callPackage ../development/tools/rust/cargo-show-asm { };
-  cargo-shuttle = callPackage ../development/tools/rust/cargo-shuttle { };
+  cargo-shuttle = callPackage ../development/tools/rust/cargo-shuttle {
+    inherit (rustPackages_1_76) rustPlatform;
+  };
 
   cargo-sort = callPackage ../development/tools/rust/cargo-sort { };
   cargo-spellcheck = callPackage ../development/tools/rust/cargo-spellcheck {
@@ -17157,10 +17186,15 @@ with pkgs;
   cargo-supply-chain = callPackage ../development/tools/rust/cargo-supply-chain { };
   cargo-sweep = callPackage ../development/tools/rust/cargo-sweep { };
   cargo-sync-readme = callPackage ../development/tools/rust/cargo-sync-readme { };
-  cargo-tally = callPackage ../development/tools/rust/cargo-tally { };
-  cargo-temp = callPackage ../development/tools/rust/cargo-temp { };
+  cargo-tally = callPackage ../development/tools/rust/cargo-tally {
+    inherit (rustPackages_1_76) rustPlatform;
+  };
+  cargo-temp = callPackage ../development/tools/rust/cargo-temp {
+    inherit (rustPackages_1_76) rustPlatform;
+  };
   cargo-toml-lint = callPackage ../development/tools/rust/cargo-toml-lint { };
   cargo-udeps = callPackage ../development/tools/rust/cargo-udeps {
+    inherit (rustPackages_1_76) rustPlatform;
     inherit (darwin.apple_sdk.frameworks) CoreServices Security SystemConfiguration;
   };
   cargo-ui = callPackage ../development/tools/rust/cargo-ui { };
@@ -17182,14 +17216,18 @@ with pkgs;
   cargo-wipe = callPackage ../development/tools/rust/cargo-wipe { };
   cargo-workspaces = callPackage ../development/tools/rust/cargo-workspaces { };
   cargo-xbuild = callPackage ../development/tools/rust/cargo-xbuild { };
-  cargo-generate = callPackage ../development/tools/rust/cargo-generate { };
+  cargo-generate = callPackage ../development/tools/rust/cargo-generate {
+    inherit (rustPackages_1_76) rustPlatform;
+  };
   cargo-bootimage = callPackage ../development/tools/rust/bootimage { };
 
   cargo-whatfeatures = callPackage ../development/tools/rust/cargo-whatfeatures {
     inherit (darwin.apple_sdk.frameworks) Security;
   };
 
-  cargo-public-api = callPackage ../development/tools/rust/cargo-public-api { };
+  cargo-public-api = callPackage ../development/tools/rust/cargo-public-api {
+    inherit (rustPackages_1_76) rustPlatform;
+  };
 
   cargo-zigbuild = callPackage ../development/tools/rust/cargo-zigbuild { };
 
@@ -18503,7 +18541,9 @@ with pkgs;
     electron_24-bin
     electron_25-bin
     electron_26-bin
-    electron_27-bin;
+    electron_27-bin
+    electron_28-bin
+    electron_29-bin;
 
   electron_10 = electron_10-bin;
   electron_11 = electron_11-bin;
@@ -18521,9 +18561,10 @@ with pkgs;
   electron_23 = electron_23-bin;
   electron_24 = electron_24-bin;
   electron_25 = electron_25-bin;
-  electron_26 = if lib.meta.availableOn stdenv.hostPlatform electron-source.electron_26 then electron-source.electron_26 else electron_26-bin;
+  electron_26 = electron_26-bin;
   electron_27 = if lib.meta.availableOn stdenv.hostPlatform electron-source.electron_27 then electron-source.electron_27 else electron_27-bin;
-  electron_28 = electron-source.electron_28;
+  electron_28 = if lib.meta.availableOn stdenv.hostPlatform electron-source.electron_28 then electron-source.electron_28 else electron_28-bin;
+  electron_29 = if lib.meta.availableOn stdenv.hostPlatform electron-source.electron_29 then electron-source.electron_29 else electron_29-bin;
   electron = electron_27;
 
   autobuild = callPackage ../development/tools/misc/autobuild { };
@@ -25541,9 +25582,7 @@ with pkgs;
 
   vcg = callPackage ../development/libraries/vcg { };
 
-  vencord = callPackage ../misc/vencord { };
-
-  vencord-web-extension = callPackage ../misc/vencord { buildWebExtension = true; };
+  vencord-web-extension = callPackage ../by-name/ve/vencord/package.nix { buildWebExtension = true; };
 
   vid-stab = callPackage ../development/libraries/vid-stab {
     inherit (llvmPackages) openmp;
@@ -26415,7 +26454,6 @@ with pkgs;
   engelsystem = callPackage ../servers/web-apps/engelsystem { php = php81; };
 
   envoy = callPackage ../servers/http/envoy {
-    go = go_1_20;
     jdk = openjdk11_headless;
     gn = gn1924;
   };
@@ -27420,7 +27458,7 @@ with pkgs;
 
   smcroute = callPackage ../servers/smcroute { };
 
-  snipe-it = callPackage ../servers/web-apps/snipe-it {
+  snipe-it = callPackage ../by-name/sn/snipe-it/package.nix {
     php = php81;
   };
 
@@ -28223,8 +28261,6 @@ with pkgs;
   linux_6_5_hardened = linuxKernel.kernels.linux_6_5_hardened;
   linuxPackages_6_6_hardened = linuxKernel.packages.linux_6_6_hardened;
   linux_6_6_hardened = linuxKernel.kernels.linux_6_6_hardened;
-  linuxPackages_6_7_hardened = linuxKernel.packages.linux_6_7_hardened;
-  linux_6_7_hardened = linuxKernel.kernels.linux_6_7_hardened;
 
   # GNU Linux-libre kernels
   linuxPackages-libre = linuxKernel.packages.linux_libre;
@@ -32346,8 +32382,6 @@ with pkgs;
 
   googleearth-pro = libsForQt5.callPackage ../applications/misc/googleearth-pro { };
 
-  google-chrome = callPackage ../applications/networking/browsers/google-chrome { };
-
   go-graft = callPackage ../applications/networking/go-graft { };
 
   gostatic = callPackage ../applications/misc/gostatic { };
@@ -33150,7 +33184,7 @@ with pkgs;
 
   klayout = libsForQt5.callPackage ../applications/misc/klayout { };
 
-  klee = callPackage ../applications/science/logic/klee (with llvmPackages_12; {
+  klee = callPackage ../applications/science/logic/klee (with llvmPackages_13; {
     clang = clang;
     llvm = llvm;
     stdenv = stdenv;
@@ -41008,7 +41042,7 @@ with pkgs;
   pwntools = with python3Packages; toPythonApplication pwntools;
 
   putty = callPackage ../applications/networking/remote/putty {
-    gtk2 = gtk2-x11;
+    gtk3 = if stdenv.isDarwin then gtk3-x11 else gtk3;
   };
 
   qMasterPassword = libsForQt5.callPackage ../applications/misc/qMasterPassword { };

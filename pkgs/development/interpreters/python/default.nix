@@ -20,10 +20,10 @@
       sourceVersion = {
         major = "3";
         minor = "10";
-        patch = "13";
+        patch = "14";
         suffix = "";
       };
-      hash = "sha256-XIiEhmhkDT4VKzW0U27xwjsspL0slX7x7LsFP1cd0/Y=";
+      hash = "sha256-nFBIH6qMKDIym6D8iGjQpgamgPxPYOxI0mzo4HZ1H9o=";
     };
 
     python311 = {
@@ -109,9 +109,9 @@ in {
       major = "3";
       minor = "13";
       patch = "0";
-      suffix = "a5";
+      suffix = "b1";
     };
-    hash = "sha256-Hom1NVGD58iYpaAbL2AXKP5J/bidnJeB8TNghHqu+mI=";
+    hash = "sha256-unFqxWsDm1Ra1KkM5Yaleql4aTZFU3Ru8kRXKM7sGY4=";
     inherit (darwin) configd;
     inherit passthruFun;
   };
