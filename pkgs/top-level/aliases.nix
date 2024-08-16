@@ -135,6 +135,7 @@ mapAliases ({
   bpftool = bpftools; # Added 2021-05-03
   bpytop = throw "bpytop has been deprecated by btop"; # Added 2023-02-16
   bro = throw "'bro' has been renamed to/replaced by 'zeek'"; # Converted to throw 2023-09-10
+  bs-platform = throw "'bs-platform' was removed as it was broken, development ended and 'melange' has superseded it"; # Added 2024-07-29
   inherit (libsForQt5.mauiPackages) buho; # added 2022-05-17
   bukut = throw "bukut has been removed since it has been archived by upstream"; # Added 2023-05-24
   # Shorter names; keep the longer name for back-compat. Added 2023-04-11
@@ -231,7 +232,16 @@ mapAliases ({
   clang_10 = throw "clang_10 has been removed from nixpkgs"; # Added 2024-01-26
   clang_11 = throw "clang_11 has been removed from nixpkgs"; # Added 2023-01-24
 
+  clang-tools_12 = llvmPackages_12.clang-tools; # Added 2024-04-22
+  clang-tools_13 = llvmPackages_13.clang-tools; # Added 2024-04-22
+  clang-tools_14 = llvmPackages_14.clang-tools; # Added 2024-04-22
+  clang-tools_15 = llvmPackages_15.clang-tools; # Added 2024-04-22
+  clang-tools_16 = llvmPackages_16.clang-tools; # Added 2024-04-22
+  clang-tools_17 = llvmPackages_17.clang-tools; # Added 2024-04-22
+  clang-tools_18 = llvmPackages_18.clang-tools; # Added 2024-04-22
+
   cq-editor = throw "cq-editor has been removed, as it use a dependency that was disabled since python 3.8 and was last updated in 2021"; # Added 2024-05-13
+
   ### D ###
 
   dagger = throw "'dagger' has been removed from nixpkgs, as the trademark policy of the upstream project is incompatible"; # Added 2023-10-16
@@ -692,6 +702,7 @@ mapAliases ({
   linuxPackages_6_7 = linuxKernel.packages.linux_6_7;
   linuxPackages_6_8 = linuxKernel.packages.linux_6_8;
   linuxPackages_6_9 = linuxKernel.packages.linux_6_9;
+  linuxPackages_6_10 = linuxKernel.packages.linux_6_10;
   linuxPackages_rpi0 = linuxKernel.packages.linux_rpi1;
   linuxPackages_rpi02w = linuxKernel.packages.linux_rpi3;
   linuxPackages_rpi1 = linuxKernel.packages.linux_rpi1;
@@ -720,6 +731,7 @@ mapAliases ({
   linux_6_7 = linuxKernel.kernels.linux_6_7;
   linux_6_8 = linuxKernel.kernels.linux_6_8;
   linux_6_9 = linuxKernel.kernels.linux_6_9;
+  linux_6_10 = linuxKernel.kernels.linux_6_10;
   linux_rpi0 = linuxKernel.kernels.linux_rpi1;
   linux_rpi02w = linuxKernel.kernels.linux_rpi3;
   linux_rpi1 = linuxKernel.kernels.linux_rpi1;
@@ -1425,12 +1437,6 @@ mapAliases ({
 
   # LLVM packages for (integration) testing that should not be used inside Nixpkgs:
   llvmPackages_latest = llvmPackages_18;
-  llvmPackages_git = recurseIntoAttrs (callPackage ../development/compilers/llvm/git {
-    inherit (stdenvAdapters) overrideCC;
-    buildLlvmTools = buildPackages.llvmPackages_git.tools;
-    targetLlvmLibraries = targetPackages.llvmPackages_git.libraries or llvmPackages_git.libraries;
-    targetLlvm = targetPackages.llvmPackages_git.llvm or llvmPackages_git.llvm;
-  });
 
   /* If these are in the scope of all-packages.nix, they cause collisions
     between mixed versions of qt. See:

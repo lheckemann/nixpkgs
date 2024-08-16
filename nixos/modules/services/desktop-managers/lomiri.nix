@@ -22,6 +22,7 @@ in {
         libusermetrics
         lomiri
         lomiri-calculator-app
+        lomiri-camera-app
         lomiri-clock-app
         lomiri-download-manager
         lomiri-filemanager-app
@@ -39,6 +40,7 @@ in {
         qtmir # not having its desktop file for Xwayland available causes any X11 application to crash the session
         suru-icon-theme
         telephony-service
+        teleports
       ]);
       variables = {
         # To override the keyboard layouts in Lomiri

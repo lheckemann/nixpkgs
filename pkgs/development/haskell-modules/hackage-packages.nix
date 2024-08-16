@@ -43751,8 +43751,6 @@ self: {
        ];
        description = "Avro serialization support for Haskell";
        license = lib.licenses.bsd3;
-       hydraPlatforms = lib.platforms.none;
-       broken = true;
      }) {};
 
   "avro-piper" = callPackage
@@ -167382,7 +167380,6 @@ self: {
        testHaskellDepends = [ base hedgehog hspec hw-hspec-hedgehog ];
        description = "Avro support for Kafka infrastructure";
        license = lib.licenses.bsd3;
-       hydraPlatforms = lib.platforms.none;
      }) {};
 
   "hw-kafka-client" = callPackage
@@ -185392,7 +185389,6 @@ self: {
        ];
        description = "Language definition and parser for AVRO files";
        license = lib.licenses.asl20;
-       hydraPlatforms = lib.platforms.none;
      }) {};
 
   "language-bash" = callPackage

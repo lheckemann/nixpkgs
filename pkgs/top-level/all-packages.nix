@@ -4420,8 +4420,6 @@ with pkgs;
 
   burpsuite = callPackage ../tools/networking/burpsuite { };
 
-  bs-platform = callPackage ../development/compilers/bs-platform { };
-
   ciano = callPackage ../applications/graphics/ciano {
     inherit (pantheon) granite;
     python = python3;
@@ -8586,6 +8584,8 @@ with pkgs;
   graylog-5_1 = callPackage ../tools/misc/graylog/5.1.nix { };
 
   graylog-5_2 = callPackage ../tools/misc/graylog/5.2.nix { };
+
+  graylog-6_0 = callPackage ../tools/misc/graylog/6.0.nix { };
 
   graylogPlugins = recurseIntoAttrs (
     callPackage ../tools/misc/graylog/plugins.nix { }
@@ -15247,31 +15247,7 @@ with pkgs;
   clang_16 = llvmPackages_16.clang;
   clang_17 = llvmPackages_17.clang;
 
-  clang-tools = callPackage ../development/tools/clang-tools { };
-
-  clang-tools_12 = callPackage ../development/tools/clang-tools {
-    llvmPackages = llvmPackages_12;
-  };
-
-  clang-tools_13 = callPackage ../development/tools/clang-tools {
-    llvmPackages = llvmPackages_13;
-  };
-
-  clang-tools_14 = callPackage ../development/tools/clang-tools {
-    llvmPackages = llvmPackages_14;
-  };
-
-  clang-tools_15 = callPackage ../development/tools/clang-tools {
-    llvmPackages = llvmPackages_15;
-  };
-
-  clang-tools_16 = callPackage ../development/tools/clang-tools {
-    llvmPackages = llvmPackages_16;
-  };
-
-  clang-tools_17 = callPackage ../development/tools/clang-tools {
-    llvmPackages = llvmPackages_17;
-  };
+  clang-tools = llvmPackages.clang-tools;
 
   clang-analyzer = callPackage ../development/tools/analysis/clang-analyzer {
     llvmPackages = llvmPackages_14;
@@ -16295,66 +16271,33 @@ with pkgs;
     targetLlvm = targetPackages.llvmPackages_12.llvm or llvmPackages_12.llvm;
   }));
 
-  llvmPackages_13 = recurseIntoAttrs (callPackage ../development/compilers/llvm/13 ({
-    inherit (stdenvAdapters) overrideCC;
-    buildLlvmTools = buildPackages.llvmPackages_13.tools;
-    targetLlvmLibraries = targetPackages.llvmPackages_13.libraries or llvmPackages_13.libraries;
-    targetLlvm = targetPackages.llvmPackages_13.llvm or llvmPackages_13.llvm;
-    stdenv = if stdenv.cc.cc.isGNU or false then gcc12Stdenv else stdenv; # does not build with gcc13
-  }));
+  inherit (rec {
+    llvmPackagesSet = recurseIntoAttrs (callPackages ../development/compilers/llvm { });
 
-  llvmPackages_14 = recurseIntoAttrs (callPackage ../development/compilers/llvm/14 ({
-    inherit (stdenvAdapters) overrideCC;
-    buildLlvmTools = buildPackages.llvmPackages_14.tools;
-    targetLlvmLibraries = targetPackages.llvmPackages_14.libraries or llvmPackages_14.libraries;
-    targetLlvm = targetPackages.llvmPackages_14.llvm or llvmPackages_14.llvm;
-  }));
+    llvmPackages_13 = llvmPackagesSet."13";
+    llvmPackages_14 = llvmPackagesSet."14";
+    llvmPackages_15 = llvmPackagesSet."15";
+    llvmPackages_16 = llvmPackagesSet."16";
+    llvmPackages_17 = llvmPackagesSet."17";
 
-  llvmPackages_15 = recurseIntoAttrs (callPackage ../development/compilers/llvm/15 ({
-    inherit (stdenvAdapters) overrideCC;
-    buildLlvmTools = buildPackages.llvmPackages_15.tools;
-    targetLlvmLibraries = targetPackages.llvmPackages_15.libraries or llvmPackages_15.libraries;
-    targetLlvm = targetPackages.llvmPackages_15.llvm or llvmPackages_15.llvm;
-  }));
+    llvmPackages_18 = llvmPackagesSet."18";
+    clang_18 = llvmPackages_18.clang;
+    lld_18 = llvmPackages_18.lld;
+    lldb_18 = llvmPackages_18.lldb;
+    llvm_18 = llvmPackages_18.llvm;
 
-  llvmPackages_16 = recurseIntoAttrs (callPackage ../development/compilers/llvm/16 ({
-    inherit (stdenvAdapters) overrideCC;
-    buildLlvmTools = buildPackages.llvmPackages_16.tools;
-    targetLlvmLibraries = targetPackages.llvmPackages_16.libraries or llvmPackages_16.libraries;
-    targetLlvm = targetPackages.llvmPackages_16.llvm or llvmPackages_16.llvm;
-  }));
-
-  llvmPackages_17 = recurseIntoAttrs (callPackage ../development/compilers/llvm/17 ({
-    inherit (stdenvAdapters) overrideCC;
-    buildLlvmTools = buildPackages.llvmPackages_17.tools;
-    targetLlvmLibraries = targetPackages.llvmPackages_17.libraries or llvmPackages_17.libraries;
-    targetLlvm = targetPackages.llvmPackages_17.llvm or llvmPackages_17.llvm;
-  }));
-
-  inherit
-    (rec {
-      llvmPackages_18 = recurseIntoAttrs (callPackage ../development/compilers/llvm/18 ({
-        inherit (stdenvAdapters) overrideCC;
-        buildLlvmTools = buildPackages.llvmPackages_18.tools;
-        targetLlvmLibraries = targetPackages.llvmPackages_18.libraries or llvmPackages_18.libraries;
-        targetLlvm = targetPackages.llvmPackages_18.llvm or llvmPackages_18.llvm;
-      }));
-
-      clang_18 = llvmPackages_18.clang;
-      lld_18 = llvmPackages_18.lld;
-      lldb_18 = llvmPackages_18.lldb;
-      llvm_18 = llvmPackages_18.llvm;
-
-      clang-tools_18 = callPackage ../development/tools/clang-tools {
-        llvmPackages = llvmPackages_18;
-      };
-    })
-      llvmPackages_18
-      clang_18
-      lld_18
-      lldb_18
-      llvm_18
-      clang-tools_18;
+    llvmPackages_git = llvmPackagesSet.git;
+  }) llvmPackages_13
+    llvmPackages_14
+    llvmPackages_15
+    llvmPackages_16
+    llvmPackages_17
+    llvmPackages_18
+    clang_18
+    lld_18
+    lldb_18
+    llvm_18
+    llvmPackages_git;
 
   lorri = callPackage ../tools/misc/lorri {
     inherit (darwin.apple_sdk.frameworks) CoreServices Security;
@@ -16547,6 +16490,10 @@ with pkgs;
     inherit (darwin.apple_sdk.frameworks) CoreFoundation Security SystemConfiguration;
     llvm_17 = llvmPackages_17.libllvm;
   };
+  rust_1_79 = callPackage ../development/compilers/rust/1_79.nix {
+    inherit (darwin.apple_sdk.frameworks) CoreFoundation Security SystemConfiguration;
+    llvm_18 = llvmPackages_18.libllvm;
+  };
   rust = rust_1_77;
 
   mrustc = callPackage ../development/compilers/mrustc { };
@@ -16556,6 +16503,7 @@ with pkgs;
   };
 
   rustPackages_1_77 = rust_1_77.packages.stable;
+  rustPackages_1_79 = rust_1_79.packages.stable;
   rustPackages = rustPackages_1_77;
 
   inherit (rustPackages) cargo cargo-auditable cargo-auditable-cargo-wrapper clippy rustc rustPlatform;
@@ -16753,7 +16701,7 @@ with pkgs;
   cargo-public-api = callPackage ../development/tools/rust/cargo-public-api { };
 
   cargo-zigbuild = callPackage ../development/tools/rust/cargo-zigbuild {
-    zig = zig_0_12;
+    zig = buildPackages.zig_0_12;
   };
 
   cauwugo = callPackage ../development/tools/rust/cauwugo { };
@@ -18018,6 +17966,11 @@ with pkgs;
     electron_28-bin
     electron_29-bin
     electron_30-bin;
+
+  inherit (callPackages ../development/tools/electron/chromedriver { })
+    electron-chromedriver_29
+    electron-chromedriver_30
+    electron-chromedriver_31;
 
   electron_24 = electron_24-bin;
   electron_27 = if lib.meta.availableOn stdenv.hostPlatform electron-source.electron_27 then electron-source.electron_27 else electron_27-bin;
@@ -22584,8 +22537,10 @@ with pkgs;
   inherit
     ({
       libmicrohttpd_0_9_77 = callPackage ../development/libraries/libmicrohttpd/0.9.77.nix { };
+      libmicrohttpd_1_0 = callPackage ../development/libraries/libmicrohttpd/1.0.nix { };
     })
     libmicrohttpd_0_9_77
+    libmicrohttpd_1_0
     ;
 
   libmicrohttpd = libmicrohttpd_0_9_77;
@@ -25883,7 +25838,7 @@ with pkgs;
 
   matrix-alertmanager = callPackage ../servers/monitoring/matrix-alertmanager { };
 
-  mattermost = callPackage ../servers/mattermost { buildGoModule = buildGo122Module; };
+  mattermost = callPackage ../servers/mattermost { };
   matterircd = callPackage ../servers/mattermost/matterircd.nix { };
   matterbridge = callPackage ../servers/matterbridge { };
 
@@ -30309,7 +30264,7 @@ with pkgs;
   inherit (callPackage ../applications/virtualization/docker {})
     docker_24 docker_25 docker_26 docker_27;
 
-  docker = docker_24;
+  docker = docker_25;
   docker-client = docker.override { clientOnly = true; };
 
   docker-gc = callPackage ../applications/virtualization/docker/gc.nix { };
@@ -34285,8 +34240,6 @@ with pkgs;
     libjpeg_turbo = libjpeg8;
   };
 
-  skypeforlinux = callPackage ../applications/networking/instant-messengers/skypeforlinux { };
-
   SkypeExport = callPackage ../applications/networking/instant-messengers/SkypeExport { };
 
   slingshot = callPackage ../tools/misc/slingshot { };
@@ -34347,7 +34300,7 @@ with pkgs;
 
   viber = callPackage ../applications/networking/instant-messengers/viber { };
 
-  wavebox = libsForQt5.callPackage ../applications/networking/instant-messengers/wavebox { };
+  wavebox = callPackage ../applications/networking/instant-messengers/wavebox { };
 
   sonic-pi = libsForQt5.callPackage ../applications/audio/sonic-pi { };
 
@@ -34806,6 +34759,8 @@ with pkgs;
 
   thunderbird-unwrapped = thunderbirdPackages.thunderbird;
   thunderbird = wrapThunderbird thunderbird-unwrapped { };
+
+  thunderbird-128 = wrapThunderbird thunderbirdPackages.thunderbird-128 { };
 
   thunderbird-bin = wrapThunderbird thunderbird-bin-unwrapped {
     applicationName = "thunderbird";
@@ -37146,8 +37101,6 @@ with pkgs;
   powermanga = callPackage ../games/powermanga { };
 
   pysolfc = python3Packages.callPackage ../games/pysolfc { };
-
-  qq = callPackage ../applications/networking/instant-messengers/qq { };
 
   qqwing = callPackage ../games/qqwing { };
 
@@ -40261,6 +40214,7 @@ with pkgs;
   vazir-code-font = callPackage ../data/fonts/vazir-code-font { };
 
   vaultwarden = callPackage ../tools/security/vaultwarden {
+    inherit (rustPackages_1_79) rustPlatform;
     inherit (darwin.apple_sdk.frameworks) Security CoreServices SystemConfiguration;
   };
   vaultwarden-sqlite = vaultwarden;
