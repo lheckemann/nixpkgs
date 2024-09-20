@@ -91,7 +91,7 @@ in
         ''
           export CACHIX_AUTH_TOKEN="$(<"$CREDENTIALS_DIRECTORY/cachix-token")"
           ${lib.optionalString (cfg.signingKeyFile != null) ''export CACHIX_SIGNING_KEY="$(<"$CREDENTIALS_DIRECTORY/signing-key")"''}
-          ${lib.escapeShellArgs command}
+          exec ${lib.escapeShellArgs command}
         '';
     };
   };
