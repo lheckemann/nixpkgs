@@ -185,7 +185,7 @@ fn copy_file<
         fs::read(&source).wrap_err_with(|| format!("failed to read from {:?}", source))?;
 
     if let Ok(Object::Elf(e)) = Object::parse(&contents) {
-        add_dependencies(source, e, &contents, &dlopen, queue)?;
+        add_dependencies(&source, e, &contents, &dlopen, queue)?;
 
         // Make file writable to strip it
         let mut permissions = fs::metadata(&target)
@@ -197,14 +197,17 @@ fn copy_file<
 
         // Strip further than normal
         if let Ok(strip) = env::var("STRIP") {
-            if !Command::new(strip)
-                .arg("--strip-all")
-                .arg(OsStr::new(&target))
-                .output()?
-                .status
-                .success()
-            {
-                println!("{:?} was not successfully stripped.", OsStr::new(&target));
+            let source_ref: &Path = source.as_ref();
+            if source_ref.extension().map(|e| e != "ko").unwrap_or(false) {
+                if !Command::new(strip)
+                    .arg("--strip-all")
+                    .arg(OsStr::new(&target))
+                    .output()?
+                    .status
+                    .success()
+                {
+                    println!("{:?} was not successfully stripped.", OsStr::new(&target));
+                }
             }
         }
     };
