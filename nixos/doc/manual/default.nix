@@ -120,7 +120,7 @@ let
 
 in
 rec {
-  inherit (optionsDoc) optionsJSON optionsNix optionsDocBook;
+  inherit (optionsDoc) optionsJSON optionsNix;
 
   # Generate the NixOS manual.
   manualHTML =
