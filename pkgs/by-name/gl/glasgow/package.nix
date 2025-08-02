@@ -11,7 +11,7 @@
 
 python3.pkgs.buildPythonApplication rec {
   pname = "glasgow";
-  version = "0-unstable-2025-01-26";
+  version = "0-unstable-2025-08-02";
   # from `pdm show`
   realVersion =
     let
@@ -25,9 +25,11 @@ python3.pkgs.buildPythonApplication rec {
   src = fetchFromGitHub {
     owner = "GlasgowEmbedded";
     repo = "glasgow";
-    rev = "2a67f79d6025a06e98277956cbb036c4237960f1";
-    sha256 = "sha256-THunn3Oz+eldjQ72TGuq4Egnn6fiMiGG/UtYVRc/tfU=";
+    rev = "1fe5018190c2344e20f834ff7410fd1bf171ecb0";
+    sha256 = "sha256-BmNQMW/dIqspIYC7AjWMuXIn0L1MvYTRKs1YM/I6QlA=";
   };
+
+  makeFlags = ["GIT_REV_SHORT=${lib.substring 0 7 src.rev}" "GIT_TREE_DIRTY="];
 
   nativeBuildInputs = [
     python3.pkgs.pdm-backend
@@ -43,6 +45,8 @@ python3.pkgs.buildPythonApplication rec {
     libusb1
     pyvcd
     aiohttp
+    cobs
+    importlib-resources
   ];
 
   nativeCheckInputs = [
@@ -57,7 +61,7 @@ python3.pkgs.buildPythonApplication rec {
   __darwinAllowLocalNetworking = true;
 
   preBuild = ''
-    make -C firmware LIBFX2=${python3.pkgs.fx2}/share/libfx2
+    make -C firmware LIBFX2=${python3.pkgs.fx2}/share/libfx2 $makeFlags "''${makeFlagsArray[@]}"
     cp firmware/glasgow.ihex software/glasgow
     cd software
     export PDM_BUILD_SCM_VERSION="${realVersion}"
