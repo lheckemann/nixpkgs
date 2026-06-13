@@ -356,12 +356,7 @@ in
 
             jq '. * $nixos[0]' /run/onlyoffice/config/default.json.orig --slurpfile nixos /run/onlyoffice/config/nixos.json > /run/onlyoffice/config/default.json
 
-            if psql -d onlyoffice -c "SELECT 'task_result'::regclass;" >/dev/null; then
-              psql -f ${cfg.package}/var/www/onlyoffice/documentserver/server/schema/postgresql/removetbl.sql
-              psql -f ${cfg.package}/var/www/onlyoffice/documentserver/server/schema/postgresql/createdb.sql
-            else
-              psql -f ${cfg.package}/var/www/onlyoffice/documentserver/server/schema/postgresql/createdb.sql
-            fi
+            psql -f ${cfg.package}/var/www/onlyoffice/documentserver/server/schema/postgresql/createdb.sql
           '';
         in
         {
