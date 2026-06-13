@@ -263,6 +263,7 @@ in
 
       onlyoffice.settings.rabbitmq.url = cfg.rabbitmqUrl;
       onlyoffice.settings.FileConverter.converter.x2tPath = "${cfg.package.x2t-with-fonts-and-themes}/bin/x2t";
+      onlyoffice.settings.storage.fs.secretString = lib.stringFromEnvVar "FS_SECRET_STRING";
       onlyoffice.settings.services.CoAuthoring = lib.mkMerge [
         {
           server.port = cfg.port;
@@ -349,7 +350,10 @@ in
             chmod u+w /run/onlyoffice/config/log4js/production.json
             jq '.categories.default.level = "${cfg.loglevel}"' \
               /run/onlyoffice/config/log4js/production.json | sponge /run/onlyoffice/config/log4js/production.json
-            ${jsonFormat.generate "onlyoffice-nixos.json" cfg.settings} > /run/onlyoffice/config/nixos.json
+
+            FS_SECRET_STRING=$(cut -d '"' -f 2 < ${cfg.securityNonceFile}) \
+              ${jsonFormat.generate "onlyoffice-nixos.json" cfg.settings} > /run/onlyoffice/config/nixos.json
+
             jq '. * $nixos[0]' /run/onlyoffice/config/default.json.orig --slurpfile nixos /run/onlyoffice/config/nixos.json > /run/onlyoffice/config/default.json
 
             if psql -d onlyoffice -c "SELECT 'task_result'::regclass;" >/dev/null; then
