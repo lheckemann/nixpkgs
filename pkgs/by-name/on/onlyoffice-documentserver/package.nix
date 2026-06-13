@@ -16,6 +16,7 @@
   writeScript,
 
   extra-fonts ? [ ],
+  x2t,
 }:
 
 let
@@ -201,6 +202,8 @@ let
       ## required for bwrap --bind
       chmod u+w $out/var
       mkdir -p $out/var/lib/onlyoffice
+
+      ln -snf ${x2t}/bin/x2t var/www/onlyoffice/documentserver/server/FileConverter/bin/x2t
     '';
 
     # stripping self extracting javascript binaries likely breaks them
