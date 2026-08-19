@@ -18,7 +18,7 @@ in
 buildLinux (
   args
   // rec {
-    version = "7.1.4";
+    version = "7.1.8";
     pname = "linux-zen";
     modDirVersion = lib.versions.pad 3 "${version}-${suffix}";
     isZen = true;
@@ -27,7 +27,7 @@ buildLinux (
       owner = "zen-kernel";
       repo = "zen-kernel";
       rev = "v${version}-${suffix}";
-      sha256 = "1k27xhzd390krk60kay6cabl0jlpb26m6cwvdh3r8izbwgx1r0ig";
+      sha256 = "0gnbx1r0hpsws2r9wq55szmbrkimbh0wvrj2b3df4y82sxkg91z4";
     };
 
     # This is based on the following source:
