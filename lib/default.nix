@@ -185,6 +185,9 @@ let
         readFile
         ceil
         floor
+        stringFromRuntimeFile
+        stringFromSystemdCredential
+        stringFromEnvVar
         ;
       inherit (self.fixedPoints)
         fix
